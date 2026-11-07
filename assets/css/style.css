@@ -1,9 +1,11 @@
+
 :root {
   --navy: #10264F;
   --gold: #D6A943;
   --white: #FFFFFF;
   --background: #F5F7FA;
   --text: #263449;
+  --muted: #718096;
 }
 
 * {
@@ -15,4 +17,132 @@ body {
   font-family: Arial, sans-serif;
   background: var(--background);
   color: var(--text);
+  line-height: 1.6;
+}
+
+/* HEADER */
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 22px 6%;
+  border-bottom: 4px solid var(--gold);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  width: 52px;
+  height: 52px;
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  font-weight: bold;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+header h1 {
+  font-size: 21px;
+  margin: 0 0 5px;
+  color: white;
+}
+
+header p {
+  margin: 0;
+  color: #DCE4F2;
+  font-size: 13px;
+}
+
+/* KONTEN UTAMA */
+
+main {
+  width: min(1100px, 90%);
+  margin: 38px auto;
+}
+
+.welcome {
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  border: 1px solid #E3E8EF;
+  box-shadow: 0 4px 16px #10264F0A;
+}
+
+.welcome h2 {
+  color: var(--navy);
+  margin: 20px 0 10px;
+  font-size: 26px;
+}
+
+.welcome > p {
+  margin: 0;
+  color: var(--text);
+}
+
+.status {
+  display: inline-block;
+  padding: 7px 13px;
+  background: #FFF5D9;
+  color: #806019;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* INFORMASI */
+
+.info {
+  margin-top: 24px;
+  padding: 20px;
+  border-left: 4px solid var(--gold);
+  background: #FAFAFC;
+  border-radius: 6px;
+}
+
+.info strong {
+  color: var(--navy);
+}
+
+.info p {
+  margin: 8px 0 0;
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* TAMPILAN HP */
+
+@media (max-width: 600px) {
+  header {
+    padding: 18px 5%;
+  }
+
+  header h1 {
+    font-size: 17px;
+  }
+
+  main {
+    margin: 24px auto;
+  }
+
+  .welcome {
+    padding: 21px;
+  }
+
+  .welcome h2 {
+    font-size: 22px;
+  }
 }
