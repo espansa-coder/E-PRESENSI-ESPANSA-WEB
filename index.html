@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>E-PRESENSI ESPANSA</title>
+  <style>
+    :root {
+      --navy: #10264F;
+      --gold: #D6A943;
+      --bg: #F5F7FA;
+      --text: #263449;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 22px 6%;
+      border-bottom: 4px solid var(--gold);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    h1 { font-size: 21px; margin: 0 0 6px; }
+    header p { margin: 0; color: #DCE4F2; font-size: 13px; }
+
+    main {
+      width: min(1100px, 90%);
+      margin: 38px auto;
+    }
+
+    .welcome {
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      border: 1px solid #E3E8EF;
+      box-shadow: 0 4px 16px #10264F0A;
+    }
+
+    .welcome h2 {
+      color: var(--navy);
+      margin-top: 0;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 12px;
+      background: #FFF5D9;
+      color: #806019;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .info {
+      margin-top: 22px;
+      padding: 18px;
+      border-left: 4px solid var(--gold);
+      background: #FAFAFC;
+      border-radius: 6px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #718096;
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 18px 5%; }
+      h1 { font-size: 17px; }
+      main { margin: 24px auto; }
+      .welcome { padding: 21px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">ES</div>
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <span class="status">TAHAP PENGEMBANGAN</span>
+      <h2>Selamat Datang</h2>
+      <p>
+        Sistem Presensi Digital SMP Negeri 1 Panawangan.
+        Aplikasi ini dikembangkan untuk mendukung pengelolaan
+        presensi siswa secara terintegrasi.
+      </p>
+
+      <div class="info">
+        <strong>E-PRESENSI ESPANSA</strong><br>
+        Fondasi aplikasi berhasil dimuat.
+        Fitur login, dashboard, pengelolaan data siswa,
+        dan pemindaian barcode akan disiapkan secara bertahap.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+  </footer>
+
+</body>
+</html>
