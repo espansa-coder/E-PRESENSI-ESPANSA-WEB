@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Sistem - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/images/logo-smpn-panawangan.png" alt="Logo SMPN 1 Panawangan">
+      <div>
+        <h2>E-PRESENSI ESPANSA</h2>
+        <span>SMP Negeri 1 Panawangan</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span>Administrator</span>
+      <a href="login.html" class="btn-logout">Keluar</a>
+    </div>
+  </header>
+
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-title">MENU UTAMA</div>
+      <a href="dashboard.html" class="menu-item">Dashboard</a>
+
+      <div class="sidebar-title">DATA MASTER</div>
+      <a href="master-data.html" class="menu-item">Master Data</a>
+      <a href="data-siswa.html" class="menu-item">Data Siswa</a>
+      <a href="data-kelas.html" class="menu-item">Data Kelas</a>
+      <a href="tahun-pelajaran.html" class="menu-item">Tahun Pelajaran</a>
+      <a href="kalender-sekolah.html" class="menu-item">Kalender Sekolah</a>
+
+      <div class="sidebar-title">PRESENSI</div>
+      <a href="jadwal-presensi.html" class="menu-item">Jadwal Presensi</a>
+      <a href="wali-kelas.html" class="menu-item">Wali Kelas</a>
+      <a href="petugas-scanner.html" class="menu-item">Petugas Scanner</a>
+      <a href="data-presensi.html" class="menu-item">Data Presensi</a>
+
+      <div class="sidebar-title">LAPORAN & SISTEM</div>
+      <a href="laporan.html" class="menu-item">Laporan</a>
+      <a href="backup-arsip.html" class="menu-item">Backup & Arsip</a>
+      <a href="pengaturan.html" class="menu-item active">Pengaturan Sistem</a>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-heading">
+        <div>
+          <h1>Pengaturan Sistem</h1>
+          <p>Konfigurasi utama dan keamanan aplikasi E-PRESENSI ESPANSA.</p>
+        </div>
+      </div>
+
+      <div class="breadcrumb">
+        Dashboard / Pengaturan Sistem
+      </div>
+
+      <section class="dashboard-welcome">
+        <h2>Konfigurasi Aplikasi</h2>
+        <p>
+          Halaman ini digunakan Admin untuk mengelola identitas,
+          status aplikasi, keamanan akun, dan pengaturan sistem presensi.
+        </p>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>1. Identitas Sekolah</h3>
+        <div class="info-grid">
+          <div>
+            <span>Nama Sekolah</span>
+            <strong>SMP Negeri 1 Panawangan</strong>
+          </div>
+          <div>
+            <span>Nama Aplikasi</span>
+            <strong>E-PRESENSI ESPANSA</strong>
+          </div>
+          <div>
+            <span>Versi Aplikasi</span>
+            <strong>1.0.0</strong>
+          </div>
+          <div>
+            <span>Zona Waktu</span>
+            <strong>Asia/Jakarta (WIB)</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>2. Status Aplikasi</h3>
+        <div class="info-grid">
+          <div>
+            <span>Lingkungan Aplikasi</span>
+            <strong>DEVELOPMENT</strong>
+          </div>
+          <div>
+            <span>Status Sistem</span>
+            <strong>Dalam Pengembangan</strong>
+          </div>
+          <div>
+            <span>Status Presensi</span>
+            <strong>Belum Diaktifkan</strong>
+          </div>
+          <div>
+            <span>Koneksi Database</span>
+            <strong>Belum Dihubungkan</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>3. Durasi Sesi Login</h3>
+        <p>Pengaturan batas waktu sesi login berdasarkan jenis akun.</p>
+        <div class="info-grid">
+          <div>
+            <span>Admin Utama</span>
+            <strong>30 menit</strong>
+          </div>
+          <div>
+            <span>Wali Kelas</span>
+            <strong>60 menit</strong>
+          </div>
+          <div>
+            <span>Petugas Scanner</span>
+            <strong>8 jam</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>4. Keamanan Akun</h3>
+        <div class="info-grid">
+          <div>
+            <span>Minimal Panjang Password</span>
+            <strong>10 karakter</strong>
+          </div>
+          <div>
+            <span>Batas Kesalahan Login</span>
+            <strong>5 kali percobaan</strong>
+          </div>
+          <div>
+            <span>Durasi Penguncian Akun</span>
+            <strong>15 menit</strong>
+          </div>
+          <div>
+            <span>Pemulihan Akun Admin</span>
+            <strong>Menggunakan Kode Pemulihan</strong>
+          </div>
+        </div>
+        <p class="info-note">
+          Pengaturan keamanan akan diterapkan setelah sistem autentikasi
+          dan pengelolaan akun selesai dibangun.
+        </p>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>5. Perlindungan Tindakan Penting</h3>
+        <ul class="feature-list">
+          <li>Tindakan penting memerlukan konfirmasi password Admin.</li>
+          <li>Reset password akan mengakhiri sesi login terkait.</li>
+          <li>Admin dapat membuka kembali akun yang terkunci.</li>
+          <li>Operasi berisiko tinggi memerlukan persetujuan dua pihak.</li>
+          <li>Perubahan penting dicatat dalam riwayat aktivitas sistem.</li>
+        </ul>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>6. Pengaturan Presensi</h3>
+        <div class="info-grid">
+          <div>
+            <span>Metode Identifikasi</span>
+            <strong>Barcode Kartu Siswa</strong>
+          </div>
+          <div>
+            <span>Isi Barcode</span>
+            <strong>NIS Siswa</strong>
+          </div>
+          <div>
+            <span>Jenis Sesi</span>
+            <strong>Masuk, Zuhur, Pulang</strong>
+          </div>
+          <div>
+            <span>Durasi Tampilan Hasil Scan</span>
+            <strong>3 detik</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="student-panel academic-panel">
+        <h3>7. Informasi Pengembangan</h3>
+        <p>
+          Halaman Pengaturan Sistem saat ini merupakan tampilan awal.
+          Pengaturan belum terhubung dengan database dan belum dapat
+          mengubah konfigurasi aplikasi.
+        </p>
+        <p>
+          Fitur pengaturan akan diaktifkan secara bertahap setelah
+          backend, database, dan sistem keamanan selesai dibangun
+          serta diuji.
+        </p>
+      </section>
+
+      <footer class="page-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
