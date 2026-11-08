@@ -3,7 +3,7 @@
   --navy: #10264F;
   --gold: #D6A943;
   --white: #FFFFFF;
-  --background: #F5F7FA;
+  --background: #F5F7FA;.logo
   --text: #263449;
   --muted: #718096;
 }
@@ -35,17 +35,14 @@ header {
   gap: 14px;
 }
 
-.logo {
-  width: 52px;
-  height: 52px;
-  border: 2px solid var(--gold);
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  color: var(--gold);
-  font-weight: bold;
-  font-size: 17px;
+.school-logo {
+  width: 58px;
+  height: 68px;
+  object-fit: contain;
   flex-shrink: 0;
+  background: white;
+  border-radius: 8px;
+  padding: 3px;
 }
 
 header h1 {
