@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>Data Siswa - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <img src="assets/images/logo-smpn-panawangan.png"
+           alt="Logo SMP Negeri 1 Panawangan">
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+
+    <div class="dashboard-user">
+      <span>ADMINISTRATOR</span>
+      <button type="button"
+        onclick="window.location.href='login.html'">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+      <p class="sidebar-title">MENU UTAMA</p>
+      <a href="dashboard.html" class="menu-item">Beranda</a>
+      <a href="master-data.html" class="menu-item active">Master Data</a>
+      <a href="dashboard.html#presensi" class="menu-item">Data Presensi</a>
+      <a href="dashboard.html#wali-kelas" class="menu-item">Wali Kelas</a>
+      <a href="dashboard.html#petugas" class="menu-item">Petugas Scanner</a>
+
+      <p class="sidebar-title">PENGELOLAAN</p>
+      <a href="dashboard.html#jadwal" class="menu-item">Jadwal & Kalender</a>
+      <a href="dashboard.html#laporan" class="menu-item">Laporan</a>
+      <a href="dashboard.html#arsip" class="menu-item">Backup & Arsip</a>
+      <a href="dashboard.html#pengaturan" class="menu-item">Pengaturan</a>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <div class="page-heading">
+        <div>
+          <h2>Data Siswa</h2>
+          <p>Pengelolaan identitas dan status siswa.</p>
+        </div>
+        <span class="environment-label">DEVELOPMENT</span>
+      </div>
+
+      <div class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span>/</span>
+        <a href="master-data.html">Master Data</a>
+        <span>/</span>
+        <strong>Data Siswa</strong>
+      </div>
+
+      <section class="student-summary">
+        <div>
+          <span>Total Siswa</span>
+          <strong>—</strong>
+        </div>
+        <div>
+          <span>Siswa Aktif</span>
+          <strong>—</strong>
+        </div>
+        <div>
+          <span>Siswa Tidak Aktif</span>
+          <strong>—</strong>
+        </div>
+      </section>
+
+      <section class="student-panel">
+
+        <div class="student-panel-heading">
+          <div>
+            <h3>Daftar Siswa</h3>
+            <p>Data siswa akan ditampilkan setelah database terhubung.</p>
+          </div>
+        </div>
+
+        <div class="student-toolbar">
+          <input type="search"
+                 placeholder="Cari NIS atau nama siswa..."
+                 aria-label="Cari siswa">
+
+          <select aria-label="Filter kelas">
+            <option value="">Semua Kelas</option>
+          </select>
+
+          <select aria-label="Filter status">
+            <option value="">Semua Status</option>
+            <option value="aktif">Aktif</option>
+            <option value="tidak-aktif">Tidak Aktif</option>
+          </select>
+        </div>
+
+        <div class="student-table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>NIS</th>
+                <th>Nama Siswa</th>
+                <th>Kelas</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="5" class="student-empty">
+                  <strong>Belum Ada Data Siswa</strong>
+                  <span>
+                    Data siswa akan muncul di sini setelah
+                    database aplikasi terhubung.
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="student-table-note">
+          Menampilkan data: belum tersedia
+        </div>
+
+      </section>
+
+      <footer class="dashboard-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
