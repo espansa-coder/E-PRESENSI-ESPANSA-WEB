@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>Master Data - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <img src="assets/images/logo-smpn-panawangan.png"
+           alt="Logo SMP Negeri 1 Panawangan">
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+
+    <div class="dashboard-user">
+      <span>ADMINISTRATOR</span>
+      <button type="button"
+        onclick="window.location.href='login.html'">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+      <p class="sidebar-title">MENU UTAMA</p>
+      <a href="dashboard.html" class="menu-item">Beranda</a>
+      <a href="master-data.html" class="menu-item active">Master Data</a>
+      <a href="dashboard.html#presensi" class="menu-item">Data Presensi</a>
+      <a href="dashboard.html#wali-kelas" class="menu-item">Wali Kelas</a>
+      <a href="dashboard.html#petugas" class="menu-item">Petugas Scanner</a>
+
+      <p class="sidebar-title">PENGELOLAAN</p>
+      <a href="dashboard.html#jadwal" class="menu-item">Jadwal & Kalender</a>
+      <a href="dashboard.html#laporan" class="menu-item">Laporan</a>
+      <a href="dashboard.html#arsip" class="menu-item">Backup & Arsip</a>
+      <a href="dashboard.html#pengaturan" class="menu-item">Pengaturan</a>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <div class="page-heading">
+        <div>
+          <h2>Master Data</h2>
+          <p>Pengelolaan data utama sistem presensi sekolah.</p>
+        </div>
+        <span class="environment-label">DEVELOPMENT</span>
+      </div>
+
+      <section class="dashboard-welcome">
+        <h3>Pusat Pengelolaan Data</h3>
+        <p>
+          Kelola data siswa, kelas, tahun pelajaran, dan kalender
+          sekolah sebagai dasar pelaksanaan presensi digital.
+        </p>
+      </section>
+
+      <section class="dashboard-section">
+        <h3>Data Utama</h3>
+
+        <div class="master-grid">
+
+          <a href="#data-siswa" class="master-card">
+            <div class="master-icon">01</div>
+            <h4>Data Siswa</h4>
+            <p>Kelola identitas, NIS, status, dan informasi siswa.</p>
+            <span>Buka Pengelolaan →</span>
+          </a>
+
+          <a href="#data-kelas" class="master-card">
+            <div class="master-icon">02</div>
+            <h4>Data Kelas</h4>
+            <p>Kelola rombongan belajar dan pembagian siswa.</p>
+            <span>Buka Pengelolaan →</span>
+          </a>
+
+          <a href="#tahun-pelajaran" class="master-card">
+            <div class="master-icon">03</div>
+            <h4>Tahun Pelajaran</h4>
+            <p>Atur tahun pelajaran dan periode semester.</p>
+            <span>Buka Pengelolaan →</span>
+          </a>
+
+          <a href="#kalender-sekolah" class="master-card">
+            <div class="master-icon">04</div>
+            <h4>Kalender Sekolah</h4>
+            <p>Kelola hari efektif, libur, dan kegiatan khusus.</p>
+            <span>Buka Pengelolaan →</span>
+          </a>
+
+        </div>
+      </section>
+
+      <section class="dashboard-section">
+        <h3>Status Data</h3>
+
+        <div class="master-status">
+          <div>
+            <span>Status Database</span>
+            <strong>Belum Terhubung</strong>
+          </div>
+          <div>
+            <span>Lingkungan</span>
+            <strong>Development</strong>
+          </div>
+          <p>
+            Informasi jumlah data akan ditampilkan setelah
+            database aplikasi terhubung.
+          </p>
+        </div>
+      </section>
+
+      <footer class="dashboard-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
