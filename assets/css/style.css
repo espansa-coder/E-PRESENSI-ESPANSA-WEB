@@ -143,3 +143,164 @@ footer {
     font-size: 22px;
   }
 }
+
+
+/* =================================
+   HALAMAN LOGIN E-PRESENSI ESPANSA
+   ================================= */
+
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #10264F, #1D3D70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+}
+
+.login-card {
+  background: #FFFFFF;
+  padding: 38px 35px 25px;
+  border-radius: 18px;
+  border-top: 5px solid #D6A943;
+  box-shadow: 0 15px 45px #07162F55;
+}
+
+.login-brand {
+  text-align: center;
+}
+
+.login-logo {
+  width: 82px;
+  height: 96px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.login-brand h1 {
+  color: #10264F;
+  font-size: 21px;
+  margin: 0 0 5px;
+}
+
+.login-brand p {
+  color: #718096;
+  font-size: 13px;
+  margin: 0;
+}
+
+.login-divider {
+  height: 1px;
+  background: #E8ECF2;
+  margin: 25px 0;
+}
+
+.login-heading {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.login-heading h2 {
+  color: #10264F;
+  font-size: 23px;
+  margin: 0 0 7px;
+}
+
+.login-heading p {
+  color: #718096;
+  font-size: 13px;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-form label {
+  color: #263449;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #DCE2EA;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: #FAFBFD;
+}
+
+.login-form input:focus {
+  border-color: #10264F;
+  box-shadow: 0 0 0 3px #10264F12;
+}
+
+.login-button {
+  margin-top: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #10264F;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-button:hover {
+  background: #1D3D70;
+}
+
+.login-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFF7E4;
+  color: #806019;
+  padding: 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  margin-top: 22px;
+}
+
+.notice-dot {
+  width: 8px;
+  height: 8px;
+  background: #D6A943;
+  border-radius: 50%;
+}
+
+.login-footer {
+  text-align: center;
+  color: #8792A2;
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 22px 0 0;
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 15px;
+  }
+
+  .login-card {
+    padding: 30px 23px 22px;
+  }
+
+  .login-brand h1 {
+    font-size: 19px;
+  }
+}
