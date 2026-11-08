@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>Data Kelas - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <img src="assets/images/logo-smpn-panawangan.png"
+           alt="Logo SMP Negeri 1 Panawangan">
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+    <div class="dashboard-user">
+      <span>ADMINISTRATOR</span>
+      <button type="button" onclick="window.location.href='login.html'">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+      <p class="sidebar-title">MENU UTAMA</p>
+      <a href="dashboard.html" class="menu-item">Beranda</a>
+      <a href="master-data.html" class="menu-item active">Master Data</a>
+      <a href="dashboard.html#presensi" class="menu-item">Data Presensi</a>
+      <a href="dashboard.html#wali-kelas" class="menu-item">Wali Kelas</a>
+      <a href="dashboard.html#petugas" class="menu-item">Petugas Scanner</a>
+
+      <p class="sidebar-title">PENGELOLAAN</p>
+      <a href="dashboard.html#jadwal" class="menu-item">Jadwal & Kalender</a>
+      <a href="dashboard.html#laporan" class="menu-item">Laporan</a>
+      <a href="dashboard.html#arsip" class="menu-item">Backup & Arsip</a>
+      <a href="dashboard.html#pengaturan" class="menu-item">Pengaturan</a>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <div class="page-heading">
+        <div>
+          <h2>Data Kelas</h2>
+          <p>Pengelolaan rombongan belajar sekolah.</p>
+        </div>
+        <span class="environment-label">DEVELOPMENT</span>
+      </div>
+
+      <div class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span>/</span>
+        <a href="master-data.html">Master Data</a>
+        <span>/</span>
+        <strong>Data Kelas</strong>
+      </div>
+
+      <section class="student-summary">
+        <div>
+          <span>Total Kelas</span>
+          <strong>—</strong>
+        </div>
+        <div>
+          <span>Kelas Tingkat VII</span>
+          <strong>—</strong>
+        </div>
+        <div>
+          <span>Kelas Tingkat VIII–IX</span>
+          <strong>—</strong>
+        </div>
+      </section>
+
+      <section class="student-panel">
+
+        <div class="student-panel-heading">
+          <h3>Daftar Rombongan Belajar</h3>
+          <p>Data kelas akan tersedia setelah database terhubung.</p>
+        </div>
+
+        <div class="student-toolbar">
+          <input type="search"
+                 placeholder="Cari nama kelas..."
+                 aria-label="Cari kelas">
+
+          <select aria-label="Filter tingkat">
+            <option value="">Semua Tingkat</option>
+            <option value="7">Kelas VII</option>
+            <option value="8">Kelas VIII</option>
+            <option value="9">Kelas IX</option>
+          </select>
+
+          <select aria-label="Filter tahun pelajaran">
+            <option value="">Tahun Pelajaran Aktif</option>
+          </select>
+        </div>
+
+        <div class="student-table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Nama Kelas</th>
+                <th>Tingkat</th>
+                <th>Wali Kelas</th>
+                <th>Jumlah Siswa</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="student-empty">
+                  <strong>Belum Ada Data Kelas</strong>
+                  <span>
+                    Data rombongan belajar akan ditampilkan
+                    setelah database aplikasi terhubung.
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="student-table-note">
+          Data kelas belum terhubung dengan database.
+        </div>
+
+      </section>
+
+      <footer class="dashboard-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
