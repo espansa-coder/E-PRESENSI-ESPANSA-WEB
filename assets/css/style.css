@@ -969,3 +969,72 @@ footer {
     flex-wrap: wrap;
   }
 }
+
+/* =====================================
+   LAYOUT HALAMAN PENGATURAN SISTEM
+===================================== */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #FFFFFF;
+}
+
+.app-layout {
+  display: flex;
+  align-items: stretch;
+  min-height: calc(100vh - 110px);
+}
+
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  background: #FFFFFF;
+  padding: 24px 16px;
+  border-right: 1px solid #E2E8F0;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 30px;
+}
+
+.page-footer {
+  margin-top: 35px;
+  padding: 20px 10px;
+  text-align: center;
+  color: #718096;
+  font-size: 13px;
+  border-top: 1px solid #E2E8F0;
+}
+
+/* Tampilan perangkat mobile */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  .main-content {
+    padding: 20px 16px;
+  }
+}
