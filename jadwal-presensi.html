@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>Jadwal Presensi - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <img src="assets/images/logo-smpn-panawangan.png"
+           alt="Logo SMP Negeri 1 Panawangan">
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+    <div class="dashboard-user">
+      <span>ADMINISTRATOR</span>
+      <button type="button" onclick="window.location.href='login.html'">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+      <p class="sidebar-title">MENU UTAMA</p>
+      <a href="dashboard.html" class="menu-item">Beranda</a>
+      <a href="master-data.html" class="menu-item">Master Data</a>
+      <a href="dashboard.html#presensi" class="menu-item">Data Presensi</a>
+      <a href="dashboard.html#wali-kelas" class="menu-item">Wali Kelas</a>
+      <a href="dashboard.html#petugas" class="menu-item">Petugas Scanner</a>
+
+      <p class="sidebar-title">PENGELOLAAN</p>
+      <a href="tahun-pelajaran.html" class="menu-item">Tahun Pelajaran</a>
+      <a href="kalender-sekolah.html" class="menu-item">Kalender Sekolah</a>
+      <a href="jadwal-presensi.html" class="menu-item active">Jadwal Presensi</a>
+      <a href="dashboard.html#laporan" class="menu-item">Laporan</a>
+      <a href="dashboard.html#arsip" class="menu-item">Backup & Arsip</a>
+      <a href="dashboard.html#pengaturan" class="menu-item">Pengaturan</a>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <div class="page-heading">
+        <div>
+          <h2>Jadwal Presensi</h2>
+          <p>Pengaturan waktu pelaksanaan presensi siswa.</p>
+        </div>
+        <span class="environment-label">DEVELOPMENT</span>
+      </div>
+
+      <div class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span>/</span>
+        <strong>Jadwal Presensi</strong>
+      </div>
+
+      <section class="dashboard-welcome">
+        <h3>Pengaturan Sesi Presensi</h3>
+        <p>
+          Atur waktu mulai, batas waktu normal, dan batas akhir
+          untuk setiap sesi presensi.
+        </p>
+      </section>
+
+      <section class="student-panel academic-panel">
+
+        <div class="student-panel-heading">
+          <h3>1. Presensi Masuk</h3>
+          <p>Presensi kedatangan siswa di sekolah.</p>
+        </div>
+
+        <div class="academic-dates">
+          <div>
+            <span>Waktu Mulai</span>
+            <strong>05.00</strong>
+          </div>
+          <div>
+            <span>Batas Normal</span>
+            <strong>07.00</strong>
+          </div>
+          <div>
+            <span>Batas Akhir</span>
+            <strong>07.10</strong>
+          </div>
+        </div>
+
+        <div class="academic-divider"></div>
+
+        <div class="student-panel-heading">
+          <h3>2. Presensi Zuhur</h3>
+          <p>Presensi kegiatan zuhur siswa.</p>
+        </div>
+
+        <div class="academic-dates">
+          <div>
+            <span>Waktu Mulai</span>
+            <strong>11.45</strong>
+          </div>
+          <div>
+            <span>Batas Normal</span>
+            <strong>12.30</strong>
+          </div>
+          <div>
+            <span>Batas Akhir</span>
+            <strong>12.35</strong>
+          </div>
+        </div>
+
+        <div class="academic-divider"></div>
+
+        <div class="student-panel-heading">
+          <h3>3. Presensi Pulang</h3>
+          <p>Presensi kepulangan siswa dari sekolah.</p>
+        </div>
+
+        <div class="academic-dates">
+          <div>
+            <span>Waktu Mulai</span>
+            <strong>14.25</strong>
+          </div>
+          <div>
+            <span>Batas Normal</span>
+            <strong>15.00</strong>
+          </div>
+          <div>
+            <span>Batas Akhir</span>
+            <strong>17.00</strong>
+          </div>
+        </div>
+
+        <div class="academic-notice">
+          Jadwal di atas merupakan pengaturan awal rancangan.
+          Pengubahan jadwal oleh Admin akan diaktifkan setelah
+          backend dan database terhubung.
+        </div>
+
+      </section>
+
+      <footer class="dashboard-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
