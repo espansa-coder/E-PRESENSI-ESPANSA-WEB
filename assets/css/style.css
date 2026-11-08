@@ -974,21 +974,6 @@ footer {
    LAYOUT HALAMAN PENGATURAN SISTEM
 ===================================== */
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  color: #FFFFFF;
-}
-
 .app-layout {
   display: flex;
   align-items: stretch;
