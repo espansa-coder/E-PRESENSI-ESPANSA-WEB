@@ -783,3 +783,189 @@ footer {
     grid-column: auto;
   }
 }
+/* =================================
+   HALAMAN DATA SISWA
+   ================================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #98A2B3;
+  font-size: 11px;
+  margin: -10px 0 22px;
+}
+
+.breadcrumb a {
+  color: #526783;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: #10264F;
+}
+
+.breadcrumb strong {
+  color: #10264F;
+}
+
+/* RINGKASAN SISWA */
+
+.student-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.student-summary div {
+  background: white;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  padding: 19px;
+}
+
+.student-summary span {
+  display: block;
+  color: #778397;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.student-summary strong {
+  display: block;
+  color: #10264F;
+  font-size: 25px;
+}
+
+/* PANEL SISWA */
+
+.student-panel {
+  background: white;
+  border: 1px solid #E5EAF0;
+  border-radius: 11px;
+  padding: 22px;
+}
+
+.student-panel-heading {
+  margin-bottom: 20px;
+}
+
+.student-panel-heading h3 {
+  color: #10264F;
+  font-size: 16px;
+  margin: 0 0 7px;
+}
+
+.student-panel-heading p {
+  color: #8792A2;
+  font-size: 12px;
+  margin: 0;
+}
+
+/* TOOLBAR */
+
+.student-toolbar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.student-toolbar input,
+.student-toolbar select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 13px;
+  border: 1px solid #DCE2EA;
+  border-radius: 7px;
+  background: #FAFBFD;
+  color: #46546A;
+  font-size: 12px;
+  outline: none;
+}
+
+.student-toolbar input:focus,
+.student-toolbar select:focus {
+  border-color: #10264F;
+}
+
+/* TABEL SISWA */
+
+.student-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.student-table th {
+  background: #F5F7FA;
+  color: #52617A;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: left;
+  padding: 14px 13px;
+  border-bottom: 1px solid #E5EAF0;
+  white-space: nowrap;
+}
+
+.student-table td {
+  color: #46546A;
+  font-size: 12px;
+  padding: 13px;
+  border-bottom: 1px solid #EEF1F5;
+}
+
+.student-empty {
+  text-align: center !important;
+  padding: 55px 15px !important;
+}
+
+.student-empty strong {
+  display: block;
+  color: #52617A;
+  font-size: 14px;
+  margin-bottom: 9px;
+}
+
+.student-empty span {
+  display: block;
+  color: #98A2B3;
+  font-size: 11px;
+}
+
+.student-table-note {
+  color: #98A2B3;
+  font-size: 11px;
+  padding-top: 16px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .student-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .student-summary div {
+    padding: 15px;
+  }
+
+  .student-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .student-panel {
+    padding: 15px;
+  }
+
+  .breadcrumb {
+    flex-wrap: wrap;
+  }
+}
