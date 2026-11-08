@@ -668,3 +668,118 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* =================================
+   HALAMAN MASTER DATA
+   ================================= */
+
+.master-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.master-card {
+  display: block;
+  background: #FFFFFF;
+  border: 1px solid #E5EAF0;
+  border-radius: 11px;
+  padding: 23px;
+  text-decoration: none;
+  transition: 0.2s;
+  box-shadow: 0 3px 12px #10264F08;
+}
+
+.master-card:hover {
+  border-color: #D6A943;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px #10264F12;
+}
+
+.master-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EAF0FA;
+  color: #10264F;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 17px;
+}
+
+.master-card h4 {
+  color: #10264F;
+  font-size: 16px;
+  margin: 0 0 9px;
+}
+
+.master-card p {
+  color: #778397;
+  font-size: 12px;
+  line-height: 1.7;
+  min-height: 42px;
+  margin: 0 0 17px;
+}
+
+.master-card span {
+  color: #A17A24;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.master-status {
+  background: #FFFFFF;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.master-status div span {
+  display: block;
+  color: #8792A2;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.master-status div strong {
+  color: #10264F;
+  font-size: 14px;
+}
+
+.master-status p {
+  grid-column: 1 / -1;
+  color: #8792A2;
+  font-size: 11px;
+  border-top: 1px solid #E8ECF2;
+  padding-top: 15px;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .master-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .master-card {
+    padding: 19px;
+  }
+
+  .master-card p {
+    min-height: auto;
+  }
+
+  .master-status {
+    grid-template-columns: 1fr;
+  }
+
+  .master-status p {
+    grid-column: auto;
+  }
+}
