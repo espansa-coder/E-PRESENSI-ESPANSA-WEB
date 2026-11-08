@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <title>Backup & Arsip - E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="dashboard-header">
+    <div class="dashboard-brand">
+      <img src="assets/images/logo-smpn-panawangan.png"
+           alt="Logo SMP Negeri 1 Panawangan">
+      <div>
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+    </div>
+    <div class="dashboard-user">
+      <span>ADMINISTRATOR</span>
+      <button type="button" onclick="window.location.href='login.html'">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+      <p class="sidebar-title">MENU UTAMA</p>
+      <a href="dashboard.html" class="menu-item">Beranda</a>
+      <a href="master-data.html" class="menu-item">Master Data</a>
+      <a href="data-presensi.html" class="menu-item">Data Presensi</a>
+      <a href="wali-kelas.html" class="menu-item">Wali Kelas</a>
+      <a href="petugas-scanner.html" class="menu-item">Petugas Scanner</a>
+
+      <p class="sidebar-title">PENGELOLAAN</p>
+      <a href="tahun-pelajaran.html" class="menu-item">Tahun Pelajaran</a>
+      <a href="kalender-sekolah.html" class="menu-item">Kalender Sekolah</a>
+      <a href="jadwal-presensi.html" class="menu-item">Jadwal Presensi</a>
+      <a href="laporan.html" class="menu-item">Laporan</a>
+      <a href="backup-arsip.html" class="menu-item active">Backup & Arsip</a>
+      <a href="dashboard.html#pengaturan" class="menu-item">Pengaturan</a>
+    </aside>
+
+    <main class="dashboard-content">
+
+      <div class="page-heading">
+        <div>
+          <h2>Backup & Arsip Data</h2>
+          <p>Perlindungan, penyimpanan, dan pemulihan data presensi.</p>
+        </div>
+        <span class="environment-label">DEVELOPMENT</span>
+      </div>
+
+      <div class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span>/</span>
+        <strong>Backup & Arsip Data</strong>
+      </div>
+
+      <section class="dashboard-welcome">
+        <h3>Pengelolaan Backup dan Arsip</h3>
+        <p>
+          Lindungi data sekolah melalui pencadangan berkala
+          dan pengarsipan berdasarkan periode akademik.
+        </p>
+      </section>
+
+      <section class="student-panel academic-panel">
+
+        <div class="student-panel-heading">
+          <h3>Status Backup</h3>
+          <p>Informasi backup akan ditampilkan setelah database terhubung.</p>
+        </div>
+
+        <div class="academic-info">
+          <div>
+            <span>Status Backup</span>
+            <strong>Belum Terhubung</strong>
+          </div>
+          <div>
+            <span>Penyimpanan Arsip</span>
+            <strong>Google Drive</strong>
+          </div>
+        </div>
+
+        <div class="academic-divider"></div>
+
+        <h4>Jadwal Backup Otomatis</h4>
+
+        <div class="academic-dates">
+          <div>
+            <span>Frekuensi</span>
+            <strong>Setiap Minggu</strong>
+          </div>
+          <div>
+            <span>Hari</span>
+            <strong>Minggu</strong>
+          </div>
+          <div>
+            <span>Waktu</span>
+            <strong>02.00 WIB</strong>
+          </div>
+          <div>
+            <span>Retensi Backup</span>
+            <strong>12 Bulan</strong>
+          </div>
+        </div>
+
+        <div class="academic-divider"></div>
+
+        <h4>Pengelolaan Arsip</h4>
+
+        <div class="academic-dates">
+          <div>
+            <span>Arsip Tahun Pelajaran</span>
+            <strong>Disiapkan</strong>
+          </div>
+          <div>
+            <span>Arsip Bulanan</span>
+            <strong>Disiapkan</strong>
+          </div>
+          <div>
+            <span>Penyimpanan Laporan Lama</span>
+            <strong>Tetap Dapat Diakses</strong>
+          </div>
+          <div>
+            <span>Lokasi Penyimpanan</span>
+            <strong>Google Drive</strong>
+          </div>
+        </div>
+
+        <div class="academic-divider"></div>
+
+        <h4>Pemulihan Data</h4>
+
+        <div class="academic-notice">
+          <ul>
+            <li>Backup manual dapat dilakukan oleh Admin.</li>
+            <li>Backup otomatis dijadwalkan setiap Minggu pukul 02.00 WIB.</li>
+            <li>Backup dilakukan sebelum perubahan besar pada sistem produksi.</li>
+            <li>Arsip disusun berdasarkan tahun pelajaran dan bulan.</li>
+            <li>Pemulihan data harus melalui pemeriksaan dan persetujuan.</li>
+            <li>Arsip lama tetap dapat digunakan untuk melihat laporan semester dan tahunan.</li>
+            <li>Data utama tidak boleh dihapus sebelum proses pengarsipan berhasil diverifikasi.</li>
+          </ul>
+        </div>
+
+        <div class="academic-notice">
+          Halaman ini masih berupa rancangan tampilan.
+          Proses backup, arsip Google Drive, dan pemulihan data
+          akan diaktifkan setelah backend dan database siap.
+        </div>
+
+      </section>
+
+      <footer class="dashboard-footer">
+        © 2026 SMP Negeri 1 Panawangan · E-PRESENSI ESPANSA
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
