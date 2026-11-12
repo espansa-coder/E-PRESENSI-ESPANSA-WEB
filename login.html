@@ -1,82 +1,73 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#10264F">
-
-  <title>Login - E-PRESENSI ESPANSA</title>
-
-  <link rel="stylesheet" href="assets/css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10264F">
+<title>Masuk - E-PRESENSI ESPANSA</title>
+<style>
+  :root { --navy:#10264F; --ink:#17202e; --mute:#5b6678; --line:#d5dbe6; --bg:#eef1f6; --bad:#b3261e; }
+  * { box-sizing:border-box; } [hidden] { display:none !important; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; font:16px/1.45 system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); padding:16px; }
+  .box { width:100%; max-width:380px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:24px; }
+  .brand { text-align:center; margin-bottom:12px; } .brand img { width:72px; height:auto; } .brand h1 { margin:8px 0 0; font-size:1.2rem; color:var(--navy); } .brand p { margin:2px 0 0; color:var(--mute); font-size:.9rem; }
+  label { display:block; font-size:.85rem; color:var(--mute); margin:12px 0 2px; }
+  input, button { font:inherit; width:100%; min-height:44px; border-radius:6px; border:1px solid var(--line); padding:8px 12px; }
+  button { margin-top:18px; background:var(--navy); border-color:var(--navy); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.6; } input:focus-visible, button:focus-visible { outline:3px solid #4a7fd8; outline-offset:2px; }
+  .err { color:var(--bad); min-height:1.4em; margin-top:10px; font-size:.92rem; } .env { text-align:center; margin-top:14px; font-size:.75rem; color:#a15c00; font-weight:700; }
+  h2 { margin:0 0 4px; font-size:1.1rem; color:var(--navy); } .hint { color:var(--mute); font-size:.9rem; margin:0 0 4px; }
+</style>
 </head>
+<body>
+<main class="box">
+  <div class="brand"><img src="assets/images/logo-smpn-panawangan.png" alt="Logo SMP Negeri 1 Panawangan"><h1>E-PRESENSI ESPANSA</h1><p>SMP Negeri 1 Panawangan</p></div>
 
-<body class="login-page">
+  <form id="f" autocomplete="off">
+    <label for="u">Username (NIP untuk Wali Kelas)</label><input id="u" required autofocus>
+    <label for="p">Password</label><input id="p" type="password" required>
+    <button id="b" type="submit">Masuk</button><div class="err" id="e" role="alert"></div>
+  </form>
 
-  <main class="login-container">
+  <form id="f2" autocomplete="off" hidden>
+    <h2>Ganti password</h2><p class="hint">Ganti password awal Anda sebelum melanjutkan (minimal 10 karakter).</p>
+    <label for="o">Password lama</label><input id="o" type="password" required>
+    <label for="n1">Password baru</label><input id="n1" type="password" minlength="10" required>
+    <label for="n2">Ulangi password baru</label><input id="n2" type="password" minlength="10" required>
+    <button type="submit">Simpan password</button><div class="err" id="e2" role="alert"></div>
+  </form>
+  <div class="env">LINGKUNGAN PENGEMBANGAN</div>
+</main>
+<script src="assets/js/api.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (i) { return document.getElementById(i); };
+  var msg = sessionStorage.getItem('ep.msg'); if (msg) { $('e').textContent = msg; sessionStorage.removeItem('ep.msg'); }
 
-    <section class="login-card">
-
-      <div class="login-brand">
-        <img
-          src="assets/images/logo-smpn-panawangan.png"
-          alt="Logo SMP Negeri 1 Panawangan"
-          class="login-logo"
-        >
-
-        <h1>E-PRESENSI ESPANSA</h1>
-        <p>SMP Negeri 1 Panawangan</p>
-      </div>
-
-      <div class="login-divider"></div>
-
-      <div class="login-heading">
-        <h2>Selamat Datang</h2>
-        <p>Silakan masuk menggunakan akun Anda</p>
-      </div>
-
-      <form class="login-form">
-
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Masukkan username"
-          autocomplete="username"
-          required
-        >
-
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Masukkan password"
-          autocomplete="current-password"
-          required
-        >
-
-        <button type="button" class="login-button">
-          MASUK
-        </button>
-
-      </form>
-
-      <div class="login-notice">
-        <span class="notice-dot"></span>
-        Lingkungan Pengembangan (WEB)
-      </div>
-
-      <p class="login-footer">
-        © 2026 SMP Negeri 1 Panawangan
-        <br>
-        E-PRESENSI ESPANSA
-      </p>
-
-    </section>
-
-  </main>
-
+  function go(d) {
+    var role = d.user.role;
+    if (role === 'ADMIN' || role === 'ADMIN_UTAMA') location.replace('dashboard.html');
+    else if (role === 'WALI_KELAS') location.replace('wali.html');
+    else { sessionStorage.removeItem('ep.sess'); $('e').textContent = 'Akun Petugas Scanner memakai halaman scanner, bukan portal ini.'; }
+  }
+  $('f').onsubmit = function (ev) {
+    ev.preventDefault(); $('b').disabled = true; $('e').textContent = '';
+    var pw = $('p').value;
+    EP.login($('u').value, pw).then(function (d) {
+      $('p').value = '';
+      if (d.mustChange) { $('f').hidden = true; $('f2').hidden = false; $('o').value = pw; $('n1').focus(); window.__d = d; }
+      else go(d);
+    }).catch(function (x) { $('e').textContent = x.message; }).then(function () { $('b').disabled = false; });
+  };
+  $('f2').onsubmit = function (ev) {
+    ev.preventDefault(); $('e2').textContent = '';
+    if ($('n1').value !== $('n2').value) { $('e2').textContent = 'Password baru dan pengulangannya tidak sama.'; return; }
+    EP.api('auth.changePassword', { oldPassword: $('o').value, newPassword: $('n1').value }).then(function () {
+      var s = EP.session(); s.mustChange = false; sessionStorage.setItem('ep.sess', JSON.stringify(s)); go(window.__d);
+    }).catch(function (x) { $('e2').textContent = x.message; });
+  };
+})();
+</script>
 </body>
 </html>
