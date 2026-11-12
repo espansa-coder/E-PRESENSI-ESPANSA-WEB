@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scanner - E-Presensi Espansa</title>
+<style>
+  :root { --navy:#10264F; --ink:#17202e; --mute:#5b6678; --line:#d5dbe6; --bg:#eef1f6; --ok:#0b7a43; --warn:#a15c00; --bad:#b3261e; --info:#1f56a8; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; font:16px/1.45 system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  [hidden] { display:none !important; }
+  button, input { font:inherit; min-height:44px; border-radius:6px; border:1px solid var(--line); padding:8px 12px; background:#fff; color:var(--ink); }
+  button { cursor:pointer; }
+  button.primary { background:var(--navy); border-color:var(--navy); color:#fff; }
+  button:focus-visible, input:focus-visible { outline:3px solid #4a7fd8; outline-offset:2px; }
+  #login { max-width:380px; margin:8vh auto; background:#fff; padding:24px; border-radius:10px; border:1px solid var(--line); }
+  #login h1 { margin:0 0 4px; font-size:1.3rem; color:var(--navy); }
+  #login p { margin:0 0 14px; color:var(--mute); font-size:.92rem; }
+  #login label { display:block; font-size:.88rem; color:var(--mute); margin:10px 0 2px; }
+  #login input { width:100%; }
+  #login button { width:100%; margin-top:16px; }
+  #lerr { color:var(--bad); min-height:1.4em; margin-top:10px; font-size:.92rem; }
+  header { background:var(--navy); color:#fff; padding:8px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:1.05rem; flex:1 1 auto; }
+  header .env { background:#f0b429; color:#2a1d00; font-size:.75rem; font-weight:700; padding:1px 8px; border-radius:99px; margin-left:8px; }
+  header button { min-height:36px; background:transparent; color:#fff; border-color:rgba(255,255,255,.4); padding:4px 10px; }
+  #clock { font-variant-numeric:tabular-nums; text-align:right; line-height:1.2; }
+  #clock b { font-size:1.4rem; display:block; }
+  #clock span { font-size:.8rem; opacity:.8; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; padding:8px 16px; background:#fff; border-bottom:1px solid var(--line); }
+  .chip { font-size:.85rem; padding:2px 10px; border-radius:99px; background:#e8ecf3; }
+  .chip.ok { background:#d8f0e2; color:#075c32; } .chip.warn { background:#fde9c7; color:#7a4500; } .chip.bad { background:#f8d9d6; color:#8a1c15; }
+  #banner { background:#fde9c7; color:#7a4500; padding:6px 16px; font-size:.92rem; }
+  main { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:16px; padding:16px; max-width:1200px; margin:0 auto; }
+  @media (max-width:820px) { main { grid-template-columns:1fr; } }
+  .cam { position:relative; background:#000; border-radius:10px; overflow:hidden; aspect-ratio:16/9; }
+  video { width:100%; height:100%; object-fit:cover; display:block; }
+  .guide { position:absolute; inset:28% 14%; border:3px solid rgba(255,255,255,.85); border-radius:8px; pointer-events:none; }
+  .tip { color:var(--mute); font-size:.88rem; margin:8px 0 0; }
+  #result { border-radius:10px; padding:16px; background:#fff; border:2px solid var(--line); min-height:190px; }
+  #result.ok { border-color:var(--ok); background:#eaf7ef; } #result.warn { border-color:var(--warn); background:#fff4de; }
+  #result.bad { border-color:var(--bad); background:#fdecea; } #result.info { border-color:var(--info); background:#e9f0fb; }
+  #rstatus { font-size:1.7rem; font-weight:800; line-height:1.15; }
+  #rname { font-size:1.35rem; font-weight:700; margin-top:6px; overflow-wrap:anywhere; }
+  #rmeta, #rmsg { color:var(--mute); margin-top:4px; }
+  .panel { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:12px; }
+  .panel h2 { margin:0 0 6px; font-size:.95rem; color:var(--mute); font-weight:600; }
+  #man { width:100%; }
+  #found button { display:block; width:100%; text-align:left; margin-top:6px; }
+  #recent { margin:0; padding-left:1.2rem; font-size:.9rem; max-height:170px; overflow:auto; }
+  #toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:#17202e; color:#fff; padding:8px 16px; border-radius:8px; font-size:.92rem; opacity:0; transition:opacity .2s; pointer-events:none; max-width:90vw; }
+  #toast.on { opacity:1; }
+</style>
+</head>
+<body>
+
+<section id="login">
+  <h1>E-Presensi Espansa <span style="font-size:.7rem;color:#a15c00">DEV</span></h1>
+  <p>Login Petugas Scanner</p>
+  <form id="f" autocomplete="off">
+    <label for="u">Username</label><input id="u" required>
+    <label for="p">Password</label><input id="p" type="password" required>
+    <label for="dev">ID perangkat (DEVICE ID)</label><input id="dev" placeholder="DEV-XXXXXXXX">
+    <label for="key">Kunci perangkat (DEVICE KEY)</label><input id="key" type="password">
+    <button class="primary" id="lbtn" type="submit">Masuk</button>
+    <div id="lerr" role="alert"></div>
+  </form>
+</section>
+
+<section id="app" hidden>
+  <header>
+    <h1>E-Presensi Espansa <span class="env">DEV</span></h1>
+    <div id="clock"><b id="tm">--:--:--</b><span id="dt"></span></div>
+    <button id="fs" type="button">Layar penuh</button>
+    <button id="out" type="button">Keluar</button>
+  </header>
+  <div class="chips" aria-live="polite">
+    <span class="chip" id="cSesi">Sesi: -</span><span class="chip" id="cNet">ONLINE</span><span class="chip" id="cQ">Antrean: 0</span>
+    <span class="chip" id="cCnt">Scan perangkat ini: 0</span><span class="chip" id="cCam">Kamera: -</span>
+    <span class="chip" id="cBat" hidden>Baterai</span><span class="chip" id="cMs" hidden>Respons</span>
+  </div>
+  <div id="banner" hidden></div>
+  <main>
+    <section>
+      <div class="cam"><video id="v" playsinline muted></video><div class="guide"></div></div>
+      <p class="tip" id="tip">Dekatkan barcode kartu ke kotak. Jaga jarak sekitar 10-20 cm dan hindari pantulan cahaya.</p>
+      <button id="rcam" type="button" hidden>Mulai ulang kamera</button>
+    </section>
+    <section>
+      <div id="result" role="status" aria-live="assertive">
+        <div id="rstatus">Siap memindai</div><div id="rname"></div><div id="rmeta"></div><div id="rmsg"></div>
+      </div>
+      <div class="panel">
+        <h2>Input manual (NIS atau nama)</h2>
+        <input id="man" inputmode="search" placeholder="Ketik NIS atau nama, tekan Enter" autocomplete="off">
+        <div id="found"></div>
+      </div>
+      <div class="panel"><h2>Hasil terakhir</h2><ol id="recent"></ol></div>
+    </section>
+  </main>
+</section>
+<div id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  var API = 'https://script.google.com/macros/s/AKfycbzxlDM0vbjCH8MCDHafTl9njW3d4XW7fJJ8yY6OSjinWkEEF1wId5k8eMEUREedXCHZkw/exec';
+  var $ = function (i) { return document.getElementById(i); };
+  var S = { token: null, exp: 0, user: null, boot: null, idx: {}, skew: 0, queue: [], recent: [], count: 0, lastCode: '', lastAt: 0,
+            stream: null, det: null, running: false, camTry: 0, online: navigator.onLine, syncing: false, hideT: null,
+            done: load('ep.done', { t: '', k: {} }), ms: 0, srv: 0, disp: null };
+
+  function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function uuid() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'T' + Date.now() + '-' + Math.random().toString(36).slice(2, 12); }
+  function toast(t, ms) { var e = $('toast'); e.textContent = t; e.classList.add('on'); setTimeout(function () { e.classList.remove('on'); }, ms || 3000); }
+
+  // ---------- API ----------
+  function api(action, payload, ms) {
+    var ctl = new AbortController(), t = setTimeout(function () { ctl.abort(); }, ms || 10000);
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal,
+      body: JSON.stringify({ action: action, token: S.token, payload: payload }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        clearTimeout(t); setOnline(true); S.srv = j.srvMs;
+        if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; }
+        return j.data;
+      }, function (e) { clearTimeout(t); setOnline(false); e.net = true; throw e; });
+  }
+  function setOnline(v) { S.online = v; render(); }
+
+  // ---------- waktu ----------
+  function nowMs() { return Date.now() + S.skew; }
+  function jkt(ms) {
+    var o = {}; new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', year: 'numeric', month: '2-digit', day: '2-digit' })
+      .formatToParts(new Date(ms)).forEach(function (x) { o[x.type] = x.value; });
+    if (o.hour === '24') o.hour = '00';
+    return o;
+  }
+  function secOf(o) { return (+o.hour) * 3600 + (+o.minute) * 60 + (+o.second); }
+  function activeSesi() {
+    var b = S.boot; if (!b || !b.hariPresensi) return '';
+    var n = jkt(nowMs()); if (n.year + '-' + n.month + '-' + n.day !== b.tanggal) return '';
+    var s = secOf(n), r = '';
+    ['MASUK', 'ZUHUR', 'PULANG'].forEach(function (x) { var j = b.jadwal[x]; if (!r && j && b.hariPresensi[x] && s >= j.mulai && s <= j.akhir) r = x; });
+    return r;
+  }
+
+  // ---------- login ----------
+  var cfg = load('ep.cfg', {});
+  $('u').value = cfg.username || ''; $('dev').value = cfg.deviceId || '';
+  if (cfg.deviceKey) $('key').placeholder = 'tersimpan di perangkat ini';
+  $('f').onsubmit = function (e) {
+    e.preventDefault();
+    var dev = $('dev').value.trim() || cfg.deviceId, key = $('key').value.trim() || cfg.deviceKey;
+    $('lbtn').disabled = true; $('lerr').textContent = '';
+    S.token = null;
+    api('login', { username: $('u').value.trim(), password: $('p').value, deviceId: dev, deviceKey: key }, 15000).then(function (d) {
+      cfg = { username: $('u').value.trim(), deviceId: dev, deviceKey: key }; save('ep.cfg', cfg);
+      S.token = d.token; S.exp = Date.now() + d.expiresInSeconds * 1000; S.user = d.user;
+      save('ep.sess', { token: S.token, exp: S.exp, user: S.user });
+      $('p').value = ''; $('key').value = ''; startApp();
+    }).catch(function (x) {
+      $('lerr').textContent = x.net ? 'Tidak dapat terhubung ke server. Periksa internet.' : x.message;
+    }).then(function () { $('lbtn').disabled = false; });
+  };
+  function forceLogin(msg) {
+    stopCam(); S.token = null; save('ep.sess', null);
+    $('app').hidden = true; $('login').hidden = false; $('lerr').textContent = msg || '';
+  }
+  $('out').onclick = function () {
+    if (S.queue.length && !confirm('Masih ada ' + S.queue.length + ' transaksi belum terkirim. Tetap keluar? Antrean tetap tersimpan.')) return;
+    var done = function () { forceLogin(''); };
+    api('logout', {}, 5000).then(done, done);
+  };
+
+  // ---------- data siswa ----------
+  function bootstrap() {
+    return api('scanner.bootstrap', {}, 20000).then(function (d) {
+      S.boot = d; S.skew = Date.parse(d.serverTime) - Date.now(); save('ep.boot', d); save('ep.skew', S.skew); buildIdx();
+      if (S.done.t !== d.tanggal) { S.done = { t: d.tanggal, k: {} }; save('ep.done', S.done); S.count = 0; }
+      render();
+    }).catch(function (e) {
+      if (e.code === 'SESI_BERAKHIR' || e.code === 'PERANGKAT_DICABUT') return forceLogin(e.message);
+      if (!S.boot) { S.boot = load('ep.boot', null); S.skew = load('ep.skew', 0); buildIdx(); }
+      render();
+    });
+  }
+  function buildIdx() { S.idx = {}; if (S.boot) S.boot.siswa.forEach(function (r) { S.idx[r[0]] = r; }); }
+
+  // ---------- scan ----------
+  function onCode(code) {
+    var n = Date.now(); code = String(code).trim();
+    if (code === S.lastCode && n - S.lastAt < 3000) { S.lastAt = n; return; }
+    S.lastCode = code; S.lastAt = n; submit(code);
+  }
+  function submit(nis) {
+    var t0 = performance.now();
+    if (!S.boot) { result({ hasil: 'DITOLAK', pesan: 'Data siswa belum siap. Tunggu sebentar.' }); beep(false); return; }
+    var st = S.idx[nis];
+    if (!st) { result({ hasil: 'DITOLAK', pesan: 'BARCODE TIDAK TERDAFTAR', nis: nis }); beep(false); return; }
+    var sesi = activeSesi();
+    if (!sesi) {   // minta alasan resmi dari server (mis. "Sesi ZUHUR dibuka pukul 11:45")
+      if (S.online) return direct(nis, st);
+      result({ hasil: 'DITOLAK', pesan: 'Di luar jam sesi presensi.', nis: nis }, st); beep(false); return;
+    }
+    if (sesi === 'ZUHUR' && st[3]) { result({ hasil: 'DITOLAK', pesan: 'Siswa dikecualikan dari presensi Zuhur.', nis: nis, sesi: sesi }, st); beep(false); return; }
+    var key = sesi + '|' + nis;
+    if (S.done.k[key]) { result({ hasil: 'DITOLAK', pesan: 'Sudah presensi ' + sesi + ' pukul ' + S.done.k[key] + ' (tercatat di perangkat ini).', nis: nis, sesi: sesi }, st); beep(false); return; }
+    var j = S.boot.jadwal[sesi], sec = secOf(jkt(nowMs()));
+    var ls = (sesi === 'PULANG' || sec <= j.hadir) ? 'HADIR' : 'TERLAMBAT';
+    var item = { transaksiId: uuid(), nis: nis, waktuPerangkat: new Date().toISOString(), nama: st[1], sesi: sesi, first: S.online };
+    S.done.k[key] = clockStr(); save('ep.done', S.done);
+    if (S.online) {   // hasil tampil seketika; konfirmasi server menyusul di latar belakang
+      item.ls = ls; S.queue.push(item); save('ep.queue', S.queue);
+      result({ hasil: 'DITERIMA', status: ls, sesi: sesi, nis: nis, pesan: 'Menyimpan ke server...' }, st); beep(true);
+      S.disp = Math.round(performance.now() - t0); sync();
+    } else {
+      S.queue.push(item); save('ep.queue', S.queue);
+      result({ hasil: 'TERSIMPAN', pesan: 'Tersimpan di perangkat. Akan dikirim saat online.', nis: nis, sesi: sesi }, st); beep(true);
+      S.disp = Math.round(performance.now() - t0);
+    }
+  }
+  function direct(nis, st) {
+    var item = { transaksiId: uuid(), nis: nis, async: true, waktuPerangkat: new Date().toISOString() };
+    result({ hasil: 'PROSES', pesan: 'Memeriksa ke server...', nis: nis }, st);
+    api('scan.submit', { items: [item] }, 10000).then(function (r) { result(r[0], st); beep(r[0].hasil === 'DITERIMA'); })
+      .catch(function (e) {
+        if (e.code === 'SESI_BERAKHIR' || e.code === 'PERANGKAT_DICABUT') return forceLogin(e.message);
+        result({ hasil: 'DITOLAK', pesan: e.net ? 'Tidak dapat terhubung ke server.' : e.message, nis: nis }, st); beep(false);
+      });
+  }
+  function sync() {
+    if (S.syncing || !S.token || !S.queue.length) return;
+    S.syncing = true;
+    var batch = S.queue.slice(0, 50), byId = {}, t0 = performance.now();
+    batch.forEach(function (q) { byId[q.transaksiId] = q; });
+    api('scan.submit', { items: batch.map(function (q) {
+      var o = { transaksiId: q.transaksiId, nis: q.nis, waktuPerangkat: q.waktuPerangkat };
+      if (q.first) o.async = true; else o.offline = true;
+      return o;
+    }) }, 30000).then(function (res) {
+      S.ms = Math.round(performance.now() - t0);
+      var done = {}, pend = 0, corr = 0, off = 0;
+      res.forEach(function (r) {
+        if (r.hasil === 'GAGAL') return;   // tetap di antrean, dicoba lagi
+        done[r.transaksiId] = 1; var q = byId[r.transaksiId];
+        if (q && !q.first) off++;
+        if (r.hasil === 'MENUNGGU_PEMERIKSAAN') pend++;
+        if (q && r.hasil === 'DITOLAK') {
+          corr++;
+          if (r.kode !== 'SUDAH_PRESENSI') delete S.done.k[q.sesi + '|' + q.nis];
+          if (q.ls) S.count = Math.max(0, S.count - 1);
+          pushRecent('KOREKSI ' + (q.nama || q.nis) + ': ' + r.pesan);
+        }
+      });
+      S.queue = S.queue.filter(function (q) { return !done[q.transaksiId]; });
+      save('ep.queue', S.queue); save('ep.done', S.done);
+      if (corr) { toast('KOREKSI: ' + corr + ' scan ditolak server. Lihat Hasil terakhir.', 7000); beep(false); }
+      else if (off) toast(off + ' transaksi offline terkirim' + (pend ? ', ' + pend + ' menunggu pemeriksaan Admin' : '') + '.');
+      S.syncing = false; render(); if (S.queue.length) setTimeout(sync, 300);
+    }).catch(function (e) {
+      S.syncing = false;
+      if (e.net) { batch.forEach(function (q) { q.first = false; }); save('ep.queue', S.queue); }   // jalur offline dengan waktu perangkat
+      if (e.code === 'SESI_BERAKHIR' || e.code === 'PERANGKAT_DICABUT') forceLogin(e.message + ' Antrean tetap tersimpan.');
+      render();
+    });
+  }
+
+  // ---------- tampilan hasil ----------
+  function result(r, st) {
+    var nama = (r.siswa && r.siswa.nama) || (st && st[1]) || '', kelas = (r.siswa && r.siswa.kelas) || (st && st[2]) || '';
+    var cls = 'info', title = r.hasil;
+    if (r.hasil === 'DITERIMA') { cls = r.status === 'TERLAMBAT' ? 'warn' : 'ok'; title = r.status + ' - ' + r.sesi; if (r.kode !== 'SUDAH_DIPROSES') { S.count++; } }
+    else if (r.hasil === 'DITOLAK') { cls = 'bad'; title = 'DITOLAK'; }
+    else if (r.hasil === 'MENUNGGU_PEMERIKSAAN') { title = 'MENUNGGU PEMERIKSAAN'; }
+    else if (r.hasil === 'TERSIMPAN') { title = 'TERSIMPAN OFFLINE' + (r.sesi ? ' - ' + r.sesi : ''); }
+    else if (r.hasil === 'PROSES') { title = 'Memproses...'; }
+    var el = $('result'); el.className = cls;
+    $('rstatus').textContent = title; $('rname').textContent = nama;
+    $('rmeta').textContent = (r.nis ? 'NIS ' + r.nis : '') + (kelas ? '  |  ' + kelas : '') + '  |  ' + clockStr();
+    $('rmsg').textContent = r.hasil === 'PROSES' ? '' : (r.pesan || '');
+    clearTimeout(S.hideT);
+    if (r.hasil !== 'PROSES') {
+      pushRecent(clockStr() + '  ' + (nama || r.nis || '') + '  ' + title);
+      S.hideT = setTimeout(function () { el.className = ''; $('rstatus').textContent = 'Siap memindai'; $('rname').textContent = ''; $('rmeta').textContent = ''; $('rmsg').textContent = ''; },
+        ((S.boot && S.boot.tampilHasilDetik) || 3) * 1000);
+    }
+    render();
+  }
+  function clockStr() { var n = jkt(nowMs()); return n.hour + ':' + n.minute + ':' + n.second; }
+  function pushRecent(t) {
+    S.recent.unshift(t); S.recent = S.recent.slice(0, 8);
+    $('recent').innerHTML = ''; S.recent.forEach(function (x) { var li = document.createElement('li'); li.textContent = x; $('recent').appendChild(li); });
+  }
+
+  // ---------- suara ----------
+  var ac = null;
+  function beep(ok) {
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = ok ? 880 : 220; o.type = ok ? 'sine' : 'square'; g.gain.value = 0.15;
+      o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + (ok ? 0.12 : 0.35));
+    } catch (e) {}
+  }
+
+  // ---------- kamera ----------
+  var vid = $('v');
+  function setCam(t, cls) { var c = $('cCam'); c.textContent = 'Kamera: ' + t; c.className = 'chip ' + (cls || ''); }
+  function stopCam() {
+    S.running = false;
+    if (S.stream) { S.stream.getTracks().forEach(function (t) { t.stop(); }); S.stream = null; }
+    vid.srcObject = null;
+  }
+  function camFail(e) {
+    stopCam(); setCam('GANGGUAN', 'bad'); $('rcam').hidden = false;
+    if (e && e.name === 'NotAllowedError') { $('tip').textContent = 'Izin kamera ditolak. Izinkan kamera di ikon gembok pada address bar, lalu muat ulang.'; return; }
+    if (++S.camTry <= 3) { setTimeout(startCam, 2000); }
+    else $('tip').textContent = 'Kamera bermasalah. Gunakan input NIS manual di sebelah kanan, atau tekan Mulai ulang kamera.';
+  }
+  function startCam() {
+    stopCam(); setCam('MEMUAIKAN', 'warn');
+    if (!('BarcodeDetector' in window)) { setCam('GANGGUAN', 'bad'); $('tip').textContent = 'Browser ini belum mendukung pembaca barcode. Gunakan Chrome terbaru di Chromebook/Android, atau input NIS manual.'; return; }
+    BarcodeDetector.getSupportedFormats().then(function (f) {
+      if (f.indexOf('code_128') < 0) throw new Error('code_128 tidak didukung');
+      S.det = new BarcodeDetector({ formats: ['code_128'] });
+      return navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'environment' } });
+    }).then(function (s) {
+      S.stream = s; vid.srcObject = s; s.getVideoTracks()[0].onended = camFail; return vid.play();
+    }).then(function () {
+      S.running = true; S.camTry = 0; $('rcam').hidden = true; setCam('SIAP', 'ok'); loop();
+    }).catch(camFail);
+  }
+  function loop() {
+    if (!S.running) return;
+    if (document.hidden) return setTimeout(loop, 400);
+    S.det.detect(vid).then(function (r) { if (r.length) onCode(r[0].rawValue); }).catch(function () {}).then(function () { setTimeout(loop, 90); });
+  }
+  $('rcam').onclick = function () { S.camTry = 0; startCam(); };
+
+  // ---------- input manual ----------
+  $('man').oninput = function () {
+    var q = this.value.trim().toLowerCase(), box = $('found'); box.innerHTML = '';
+    if (q.length < 3 || !S.boot) return;
+    var hit = S.boot.siswa.filter(function (r) { return r[0].indexOf(q) === 0 || r[1].toLowerCase().indexOf(q) >= 0; }).slice(0, 6);
+    hit.forEach(function (r) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = r[1] + ' | ' + r[0] + ' | ' + r[2];
+      b.onclick = function () { $('man').value = ''; box.innerHTML = ''; submit(r[0]); };
+      box.appendChild(b);
+    });
+  };
+  $('man').onkeydown = function (e) {
+    if (e.key !== 'Enter') return;
+    var v = this.value.trim(); if (/^\d{6,12}$/.test(v)) { this.value = ''; $('found').innerHTML = ''; submit(v); }
+  };
+
+  // ---------- status ----------
+  function render() {
+    var s = activeSesi(), b = S.boot;
+    var c = $('cSesi'); c.textContent = 'Sesi: ' + (s || (b && !b.hariPresensi ? 'LIBUR' : 'TIDAK ADA')); c.className = 'chip ' + (s ? 'ok' : '');
+    c = $('cNet'); c.textContent = S.online ? 'ONLINE' : 'OFFLINE'; c.className = 'chip ' + (S.online ? 'ok' : 'bad');
+    var th = (b && b.antreanPeringatan) || 50;
+    c = $('cQ'); c.textContent = 'Antrean: ' + S.queue.length; c.className = 'chip ' + (S.queue.length >= th ? 'bad' : S.queue.length ? 'warn' : '');
+    $('cCnt').textContent = 'Scan perangkat ini: ' + S.count;
+    if (S.ms || S.disp !== null) { $('cMs').hidden = false; $('cMs').textContent = 'Tampil: ' + (S.disp === null ? '-' : S.disp + ' ms') + ' | Server: ' + (S.ms || '-') + ' ms' + (S.srv ? ' (proses ' + S.srv + ')' : ''); }
+  }
+  function tick() {
+    var n = jkt(nowMs());
+    $('tm').textContent = n.hour + ':' + n.minute + ':' + n.second;
+    $('dt').textContent = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(nowMs()));
+    var remain = (S.exp - Date.now()) / 60000, bn = $('banner');
+    if (S.token && remain <= 0) return forceLogin('Sesi berakhir. Silakan login kembali. Antrean tetap tersimpan.');
+    bn.hidden = !(remain < 10); if (remain < 10) bn.textContent = 'Sesi berakhir dalam ' + Math.max(1, Math.ceil(remain)) + ' menit. Simpan hasil, lalu login ulang.';
+    if (S.boot && n.year + '-' + n.month + '-' + n.day !== S.boot.tanggal && S.online) bootstrap();
+    render();
+  }
+  $('fs').onclick = function () { try { document.documentElement.requestFullscreen(); } catch (e) {} };
+  window.addEventListener('online', function () { setOnline(true); sync(); });
+  window.addEventListener('offline', function () { setOnline(false); });
+  if (navigator.getBattery) navigator.getBattery().then(function (b) {
+    var u = function () { var c = $('cBat'); c.hidden = false; c.textContent = 'Baterai ' + Math.round(b.level * 100) + '%'; c.className = 'chip ' + (b.level < 0.2 && !b.charging ? 'bad' : ''); };
+    u(); b.onlevelchange = u; b.onchargingchange = u;
+  });
+
+  function startApp() {
+    $('login').hidden = true; $('app').hidden = false;
+    S.queue = load('ep.queue', []);
+    S.boot = load('ep.boot', null); S.skew = load('ep.skew', 0); buildIdx();
+    bootstrap(); startCam(); render();
+    clearInterval(S.t1); clearInterval(S.t2); clearInterval(S.t3);
+    S.t1 = setInterval(tick, 500); S.t2 = setInterval(sync, 5000); S.t3 = setInterval(bootstrap, 600000);
+    sync();
+  }
+
+  var sess = load('ep.sess', null);
+  if (sess && sess.token && sess.exp > Date.now()) { S.token = sess.token; S.exp = sess.exp; S.user = sess.user; startApp(); }
+})();
+</script>
+</body>
+</html>
