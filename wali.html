@@ -72,9 +72,10 @@
       <h2>Ajukan SAKIT / IZIN</h2>
       <form class="pgf" id="pgf" autocomplete="off">
         <div class="full"><label for="pgs">Siswa</label><select id="pgs" required></select></div>
-        <div><label for="pgj">Jenis</label><select id="pgj"><option value="SAKIT">Sakit</option><option value="IZIN">Izin</option></select></div>
+        <div><label for="pgj">Jenis</label><select id="pgj"><option value="SAKIT">Sakit</option><option value="IZIN">Izin</option><option value="KOREKSI_ALPA">Koreksi ALPA (siswa sebenarnya hadir)</option></select></div>
         <div><label for="pgm">Tanggal mulai</label><input id="pgm" type="date" required></div>
         <div><label for="pgk">Tanggal selesai</label><input id="pgk" type="date" required></div>
+        <div class="full muted" id="pgh">Untuk Koreksi ALPA, isi satu tanggal saja (tanggal mulai). Admin memeriksa riwayat scan sebelum memutuskan.</div>
         <div class="full"><label for="pga">Alasan</label><input id="pga" maxlength="300" required></div>
         <div class="full"><button class="primary" id="pgb" type="submit">Kirim pengajuan</button><div id="pge" role="status"></div></div>
       </form>
@@ -168,7 +169,7 @@
     api('wali.pengajuan.daftar', {}).then(function (rows) {
       lastPg = Date.now(); var tb = $('pgt'); tb.textContent = '';
       rows.forEach(function (r) {
-        var tr = el('tr'); tr.appendChild(el('td', r[1])); tr.appendChild(el('td', r[3] === 'SAKIT' ? 'Sakit' : 'Izin'));
+        var tr = el('tr'); tr.appendChild(el('td', r[1])); tr.appendChild(el('td', ({ SAKIT: 'Sakit', IZIN: 'Izin', KOREKSI_ALPA: 'Koreksi ALPA' })[r[3]] || r[3]));
         tr.appendChild(el('td', r[4] === r[5] ? r[4] : r[4] + ' s/d ' + r[5])); tr.appendChild(el('td', r[6]));
         tr.appendChild(el('td', r[7] === 'MENUNGGU' ? 'Menunggu' : r[7] === 'DISETUJUI' ? 'Disetujui' : 'Ditolak', r[7] === 'DISETUJUI' ? 'ok' : r[7] === 'DITOLAK' ? 'bad' : 'warn'));
         var ac = el('td');
