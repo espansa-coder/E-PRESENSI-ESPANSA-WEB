@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wali Kelas - E-Presensi Espansa</title>
+<title>Admin - E-Presensi Espansa</title>
 <style>
   :root { --navy:#10264F; --ink:#17202e; --mute:#5b6678; --line:#d5dbe6; --bg:#eef1f6; --ok:#0b7a43; --warn:#a15c00; --bad:#b3261e; }
   * { box-sizing:border-box; }
@@ -11,55 +11,56 @@
   [hidden] { display:none !important; }
   button, input { font:inherit; min-height:40px; border-radius:6px; border:1px solid var(--line); padding:6px 12px; background:#fff; color:var(--ink); }
   button { cursor:pointer; } button.primary { background:var(--navy); border-color:var(--navy); color:#fff; }
+  button[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
   button:focus-visible, input:focus-visible { outline:3px solid #4a7fd8; outline-offset:2px; }
-  .box { max-width:380px; margin:8vh auto; background:#fff; padding:24px; border-radius:10px; border:1px solid var(--line); }
-  .box h1 { margin:0 0 4px; font-size:1.25rem; color:var(--navy); } .box p { margin:0 0 10px; color:var(--mute); font-size:.9rem; }
-  .box label { display:block; font-size:.85rem; color:var(--mute); margin:10px 0 2px; } .box input, .box button { width:100%; } .box button { margin-top:16px; }
-  .err { color:var(--bad); min-height:1.4em; margin-top:8px; }
+  #login { max-width:360px; margin:10vh auto; background:#fff; padding:24px; border-radius:10px; border:1px solid var(--line); }
+  #login h1 { margin:0 0 14px; font-size:1.25rem; color:var(--navy); } #login label { display:block; font-size:.85rem; color:var(--mute); margin:10px 0 2px; }
+  #login input, #login button { width:100%; } #login button { margin-top:16px; } #lerr { color:var(--bad); min-height:1.4em; margin-top:8px; }
   header { background:var(--navy); color:#fff; padding:10px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   header h1 { margin:0; font-size:1.05rem; flex:1; } header button { background:transparent; color:#fff; border-color:rgba(255,255,255,.4); min-height:34px; }
   .env { background:#f0b429; color:#2a1d00; font-size:.72rem; font-weight:700; padding:1px 8px; border-radius:99px; margin-left:8px; }
   .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px 16px; background:#fff; border-bottom:1px solid var(--line); }
   .bar .sp { flex:1; } #upd { color:var(--mute); font-size:.85rem; }
-  main { padding:16px; max-width:1100px; margin:0 auto; }
-  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; margin-bottom:16px; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; } .card b { display:block; font-size:1.5rem; line-height:1.15; } .card span { font-size:.82rem; color:var(--mute); }
-  .card.ok b, .ok { color:var(--ok); } .card.warn b, .warn { color:var(--warn); } .card.bad b, .bad { color:var(--bad); } .muted { color:var(--mute); }
-  .wrap { background:#fff; border:1px solid var(--line); border-radius:8px; overflow-x:auto; } table { border-collapse:collapse; width:100%; min-width:560px; }
-  th, td { padding:7px 10px; text-align:left; border-bottom:1px solid #edf0f5; white-space:nowrap; } th { background:#f6f8fb; font-size:.82rem; color:var(--mute); }
-  #q { width:100%; max-width:320px; margin-bottom:10px; } #empty { color:var(--mute); padding:24px; text-align:center; }
+  main { padding:16px; max-width:1200px; margin:0 auto; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-bottom:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .card b { display:block; font-size:1.6rem; line-height:1.15; } .card span { font-size:.82rem; color:var(--mute); }
+  .card.ok b { color:var(--ok); } .card.warn b { color:var(--warn); } .card.bad b { color:var(--bad); }
+  .wrap { background:#fff; border:1px solid var(--line); border-radius:8px; overflow-x:auto; margin-bottom:16px; }
+  table { border-collapse:collapse; width:100%; min-width:640px; } th, td { padding:7px 10px; text-align:right; border-bottom:1px solid #edf0f5; white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; } th { background:#f6f8fb; font-size:.82rem; color:var(--mute); position:sticky; top:0; }
+  tfoot td { font-weight:700; background:#f6f8fb; } .bad { color:var(--bad); } .muted { color:var(--mute); }
+  h2 { font-size:1rem; margin:0 0 8px; } .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px; }
+  #list { max-height:360px; overflow:auto; margin-top:8px; } #list div { display:flex; gap:10px; padding:5px 2px; border-bottom:1px solid #edf0f5; }
+  #list span:first-child { flex:1; } #empty { color:var(--mute); padding:20px; text-align:center; }
+  .pgi { border-bottom:1px solid #edf0f5; padding:8px 2px; } .pgi b { display:block; } .pgi .acts { margin-top:6px; display:flex; gap:8px; } select { font:inherit; min-height:36px; border-radius:6px; border:1px solid var(--line); padding:4px 8px; background:#fff; }
 </style>
 </head>
 <body>
-<section id="login" class="box">
-  <h1>Wali Kelas <span class="env">DEV</span></h1><p>E-Presensi Espansa, SMP Negeri 1 Panawangan</p>
+<section id="login">
+  <h1>E-Presensi Espansa <span class="env">DEV</span></h1>
   <form id="f" autocomplete="off">
-    <label for="u">NIP (username)</label><input id="u" inputmode="numeric" required>
+    <label for="u">Username</label><input id="u" required>
     <label for="p">Password</label><input id="p" type="password" required>
-    <button class="primary" id="lbtn" type="submit">Masuk</button><div class="err" id="lerr" role="alert"></div>
-  </form>
-</section>
-
-<section id="chg" class="box" hidden>
-  <h1>Ganti password</h1><p>Demi keamanan, ganti password awal Anda sebelum melanjutkan. Minimal 10 karakter.</p>
-  <form id="f2" autocomplete="off">
-    <label for="o">Password lama</label><input id="o" type="password" required>
-    <label for="n1">Password baru</label><input id="n1" type="password" minlength="10" required>
-    <label for="n2">Ulangi password baru</label><input id="n2" type="password" minlength="10" required>
-    <button class="primary" type="submit">Simpan password</button><div class="err" id="cerr" role="alert"></div>
+    <button class="primary" id="lbtn" type="submit">Masuk</button><div id="lerr" role="alert"></div>
   </form>
 </section>
 
 <section id="app" hidden>
-  <header><h1>Kelas <span id="kls"></span> <span class="env">DEV</span></h1><span id="who"></span><button id="out" type="button">Keluar</button></header>
-  <div class="bar"><label for="tgl">Tanggal</label><input id="tgl" type="date"><span class="sp"></span><span id="upd"></span><button id="ref" type="button">Muat ulang</button></div>
+  <header><h1>Dashboard Admin <span class="env">DEV</span></h1><span id="who"></span><button id="out" type="button">Keluar</button></header>
+  <div class="bar">
+    <label for="tgl">Tanggal</label><input id="tgl" type="date">
+    <button id="s1" type="button" aria-pressed="true">MASUK</button><button id="s2" type="button" aria-pressed="false">ZUHUR</button><button id="s3" type="button" aria-pressed="false">PULANG</button>
+    <span class="sp"></span><span id="upd"></span><button id="ref" type="button">Muat ulang</button>
+  </div>
   <main>
-    <div id="empty" hidden></div>
+    <div id="empty" hidden>Belum ada data presensi untuk tanggal ini. Data dibuat saat scan pertama atau sekitar pukul 04.30 pada hari sekolah.</div>
     <div id="data">
       <div class="cards" id="cards"></div>
-      <input id="q" placeholder="Cari nama atau NIS" aria-label="Cari siswa">
-      <div class="wrap"><table><thead><tr><th>Nama</th><th>NIS</th><th>Masuk</th><th>Zuhur</th><th>Pulang</th></tr></thead><tbody id="tb"></tbody></table></div>
+      <div class="wrap"><table><thead><tr id="th"></tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div>
+      <div class="panel"><h2 id="lh">Belum presensi / ALPA (MASUK)</h2><input id="q" placeholder="Cari nama atau kelas" aria-label="Cari"><div id="list"></div></div>
     </div>
+    <div class="panel" id="pgp" style="margin-top:16px"><h2>Pengajuan Wali Kelas <select id="pst" aria-label="Status pengajuan"><option value="MENUNGGU">Menunggu</option><option value="DISETUJUI">Disetujui</option><option value="DITOLAK">Ditolak</option><option value="SEMUA">Semua</option></select> <span id="pmsg" class="muted"></span></h2><div id="pgl"></div></div>
   </main>
 </section>
 
@@ -68,67 +69,94 @@
   'use strict';
   var API = 'https://script.google.com/macros/s/AKfycbzxlDM0vbjCH8MCDHafTl9njW3d4XW7fJJ8yY6OSjinWkEEF1wId5k8eMEUREedXCHZkw/exec';
   var $ = function (i) { return document.getElementById(i); };
-  var token = null, data = null, timer = null, oldPw = '';
-  var LBL = { HADIR: 'Hadir', TERLAMBAT: 'Terlambat', SAKIT: 'Sakit', IZIN: 'Izin', ALPA: 'Alpa', BELUM_PRESENSI: 'Belum', TIDAK_PRESENSI: 'Tidak presensi', BEBAS: 'Bebas', TIDAK_BERLAKU: '-' };
-  var CLS = { HADIR: 'ok', TERLAMBAT: 'warn', ALPA: 'bad', BELUM_PRESENSI: 'muted', TIDAK_PRESENSI: 'muted', BEBAS: 'muted', TIDAK_BERLAKU: 'muted' };
+  var token = null, sesi = 'MASUK', data = null, timer = null;
+  var COLS = [['HADIR', 'Hadir'], ['TERLAMBAT', 'Terlambat'], ['SAKIT', 'Sakit'], ['IZIN', 'Izin'], ['ALPA', 'Alpa'], ['BELUM_PRESENSI', 'Belum'], ['TIDAK_PRESENSI', 'Tidak presensi'], ['BEBAS', 'Bebas']];
 
   function api(action, payload) {
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, token: token, payload: payload }) })
       .then(function (r) { return r.json(); })
       .then(function (j) { if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; } return j.data; });
   }
-  function el(tag, text, cls) { var e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
   function today() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date()); }
-  function show(id) { ['login', 'chg', 'app'].forEach(function (x) { $(x).hidden = x !== id; }); }
-  function toLogin(msg) { clearInterval(timer); token = null; sessionStorage.removeItem('ep.wali'); show('login'); $('lerr').textContent = msg || ''; }
+  function el(tag, text, cls) { var e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
 
   $('f').onsubmit = function (e) {
-    e.preventDefault(); $('lbtn').disabled = true; $('lerr').textContent = ''; oldPw = $('p').value;
-    api('login', { username: $('u').value, password: oldPw, clientId: 'wali-web' }).then(function (d) {
-      if (d.user.role !== 'WALI_KELAS') { token = d.token; return api('logout', {}).then(function () { token = null; throw new Error('Akun ini bukan Wali Kelas.'); }); }
-      token = d.token; sessionStorage.setItem('ep.wali', token); $('who').textContent = d.user.nama; $('p').value = '';
-      if (d.mustChange) { show('chg'); } else { start(); }
+    e.preventDefault(); $('lbtn').disabled = true; $('lerr').textContent = '';
+    api('login', { username: $('u').value.trim(), password: $('p').value, clientId: 'admin-web' }).then(function (d) {
+      if (['ADMIN', 'ADMIN_UTAMA'].indexOf(d.user.role) < 0) { token = d.token; return api('logout', {}).then(function () { token = null; throw new Error('Akun ini bukan Admin.'); }); }
+      token = d.token; sessionStorage.setItem('ep.admin', token); $('who').textContent = d.user.nama + ' (' + d.user.role + ')';
+      $('p').value = ''; start();
     }).catch(function (x) { $('lerr').textContent = x.message; }).then(function () { $('lbtn').disabled = false; });
   };
-  $('f2').onsubmit = function (e) {
-    e.preventDefault(); $('cerr').textContent = '';
-    if ($('n1').value !== $('n2').value) { $('cerr').textContent = 'Password baru dan pengulangannya tidak sama.'; return; }
-    api('auth.changePassword', { oldPassword: $('o').value, newPassword: $('n1').value }).then(function () {
-      $('o').value = $('n1').value = $('n2').value = ''; start();
-    }).catch(function (x) { $('cerr').textContent = x.message; });
-  };
+  function toLogin(msg) { clearInterval(timer); token = null; sessionStorage.removeItem('ep.admin'); $('app').hidden = true; $('login').hidden = false; $('lerr').textContent = msg || ''; }
   $('out').onclick = function () { var d = function () { toLogin(''); }; api('logout', {}).then(d, d); };
 
-  function start() { show('app'); if (!$('tgl').value) $('tgl').value = today(); load(); clearInterval(timer); timer = setInterval(load, 60000); }
+  function start() { $('login').hidden = true; $('app').hidden = false; if (!$('tgl').value) $('tgl').value = today(); load(); loadPg(); clearInterval(timer); timer = setInterval(function () { load(); loadPg(); }, 60000); }
   function load() {
-    api('wali.rekap', { tanggal: $('tgl').value }).then(function (d) {
-      data = d; if (d.kelas[0]) $('kls').textContent = d.kelas[0].kelas;
-      $('upd').textContent = 'Diperbarui ' + new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
+    api('admin.rekap', { tanggal: $('tgl').value }).then(function (d) {
+      data = d; $('upd').textContent = 'Diperbarui ' + new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
       render();
-    }).catch(function (e) {
-      if (e.code === 'SESI_BERAKHIR') return toLogin('Sesi berakhir. Silakan login kembali.');
-      if (e.code === 'WAJIB_GANTI_PASSWORD') return show('chg');
-      data = null; $('empty').hidden = false; $('data').hidden = true; $('empty').textContent = e.message;
-    });
+    }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('upd').textContent = 'Gagal memuat: ' + e.message; });
   }
-  function cell(st, jam) { var td = el('td'); td.appendChild(el('span', LBL[st] || st || '-', CLS[st] || '')); if (jam) td.appendChild(el('span', '  ' + jam, 'muted')); return td; }
-  function render() {
-    var ok = !!(data && data.ada);
-    $('empty').hidden = ok; $('data').hidden = !ok;
-    if (!ok) { $('empty').textContent = 'Belum ada data presensi untuk tanggal ini.'; return; }
-    var t = data.total.MASUK, cards = $('cards'); cards.textContent = '';
-    [['Siswa', null, ''], ['Hadir', 'HADIR', 'ok'], ['Terlambat', 'TERLAMBAT', 'warn'], ['Sakit', 'SAKIT', ''], ['Izin', 'IZIN', ''], ['Alpa', 'ALPA', 'bad'], ['Belum', 'BELUM_PRESENSI', '']].forEach(function (c) {
-      var d = el('div', undefined, 'card ' + c[2]); d.appendChild(el('b', String(c[1] ? (t[c[1]] || 0) : data.jumlah))); d.appendChild(el('span', c[1] ? c[0] + ' (masuk)' : c[0])); cards.appendChild(d);
-    });
-    var q = $('q').value.trim().toLowerCase(), tb = $('tb'); tb.textContent = '';
-    data.siswa.filter(function (s) { return !q || s[0].toLowerCase().indexOf(q) >= 0 || String(s[1]).indexOf(q) >= 0; }).forEach(function (s) {
-      var tr = el('tr'); tr.appendChild(el('td', s[0])); tr.appendChild(el('td', s[1], 'muted'));
-      tr.appendChild(cell(s[2], s[3])); tr.appendChild(cell(s[4], s[5])); tr.appendChild(cell(s[6], s[7])); tb.appendChild(tr);
-    });
-  }
-  $('tgl').onchange = load; $('ref').onclick = load; $('q').oninput = render;
+  function pct(o, total) { var wajib = total - (o.BEBAS || 0) - (o.TIDAK_BERLAKU || 0); return wajib > 0 ? Math.round(((o.HADIR || 0) + (o.TERLAMBAT || 0)) * 100 / wajib) : 0; }
 
-  var saved = sessionStorage.getItem('ep.wali');
+  function render() {
+    $('empty').hidden = !!(data && data.ada); $('data').hidden = !(data && data.ada);
+    if (!data || !data.ada) return;
+    var t = data.total[sesi], cards = $('cards'); cards.textContent = '';
+    [['Hadir', 'HADIR', 'ok'], ['Terlambat', 'TERLAMBAT', 'warn'], ['Sakit', 'SAKIT', ''], ['Izin', 'IZIN', ''], ['Alpa', 'ALPA', 'bad'], ['Belum presensi', 'BELUM_PRESENSI', ''], ['Tidak presensi', 'TIDAK_PRESENSI', '']].forEach(function (c) {
+      var d = el('div', undefined, 'card ' + c[2]); d.appendChild(el('b', String(t[c[1]] || 0))); d.appendChild(el('span', c[0])); cards.appendChild(d);
+    });
+    var d2 = el('div', undefined, 'card'); d2.appendChild(el('b', pct(t, data.jumlah) + '%')); d2.appendChild(el('span', 'Kehadiran ' + sesi)); cards.appendChild(d2);
+    var th = $('th'); th.textContent = ''; ['Kelas', 'Siswa'].concat(COLS.map(function (c) { return c[1]; })).concat(['%']).forEach(function (h) { th.appendChild(el('th', h)); });
+    var tb = $('tb'); tb.textContent = '';
+    data.kelas.forEach(function (k) {
+      var tr = el('tr'), o = k[sesi]; tr.appendChild(el('td', k.kelas)); tr.appendChild(el('td', String(k.total)));
+      COLS.forEach(function (c) { var n = o[c[0]] || 0; tr.appendChild(el('td', n ? String(n) : '-', (c[0] === 'ALPA' && n) ? 'bad' : (n ? '' : 'muted'))); });
+      tr.appendChild(el('td', pct(o, k.total) + '%')); tb.appendChild(tr);
+    });
+    var tf = $('tf'); tf.textContent = ''; var tr2 = el('tr'); tr2.appendChild(el('td', 'Seluruh sekolah')); tr2.appendChild(el('td', String(data.jumlah)));
+    COLS.forEach(function (c) { tr2.appendChild(el('td', String(t[c[0]] || 0))); }); tr2.appendChild(el('td', pct(t, data.jumlah) + '%')); tf.appendChild(tr2);
+    renderList();
+  }
+  function renderList() {
+    var q = $('q').value.trim().toLowerCase(), box = $('list'); box.textContent = '';
+    var rows = (data && data.belum || []).filter(function (r) { return !q || r[0].toLowerCase().indexOf(q) >= 0 || r[1].toLowerCase().indexOf(q) >= 0; });
+    $('lh').textContent = 'Belum presensi / ALPA (MASUK): ' + rows.length + ' siswa';
+    rows.slice(0, 300).forEach(function (r) { var d = el('div'); d.appendChild(el('span', r[0])); d.appendChild(el('span', r[1])); d.appendChild(el('span', r[2] === 'ALPA' ? 'ALPA' : 'belum', r[2] === 'ALPA' ? 'bad' : 'muted')); box.appendChild(d); });
+  }
+  function loadPg() {
+    api('admin.pengajuan.daftar', { status: $('pst').value }).then(function (rows) {
+      var box = $('pgl'); box.textContent = '';
+      if (!rows.length) { box.appendChild(el('div', 'Tidak ada pengajuan.', 'muted')); return; }
+      rows.forEach(function (r) {
+        var d = el('div', undefined, 'pgi');
+        d.appendChild(el('b', r[1] + ' (' + r[2] + ') - ' + (r[4] === 'SAKIT' ? 'Sakit' : 'Izin') + ', ' + (r[5] === r[6] ? r[5] : r[5] + ' s/d ' + r[6])));
+        d.appendChild(el('span', 'Alasan: ' + r[7] + ' | Wali: ' + r[8] + ' | ' + r[9], 'muted'));
+        if (r[10] !== 'MENUNGGU') d.appendChild(el('div', (r[10] === 'DISETUJUI' ? 'Disetujui' : 'Ditolak') + (r[11] ? ': ' + r[11] : ''), r[10] === 'DISETUJUI' ? 'ok' : 'bad'));
+        else {
+          var a = el('div', undefined, 'acts'), y = el('button', 'Setujui', 'primary'), n = el('button', 'Tolak');
+          y.type = 'button'; n.type = 'button';
+          y.onclick = function () { putus(r[0], 'DISETUJUI', ''); };
+          n.onclick = function () { var c = prompt('Alasan penolakan (wajib):'); if (c) putus(r[0], 'DITOLAK', c); };
+          a.appendChild(y); a.appendChild(n); d.appendChild(a);
+        }
+        box.appendChild(d);
+      });
+    }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('pmsg').textContent = e.message; });
+  }
+  function putus(id, k, c) {
+    api('admin.pengajuan.putuskan', { id: id, keputusan: k, catatan: c }).then(function (r) {
+      $('pmsg').textContent = k === 'DISETUJUI' ? 'Disetujui. ' + r.diterapkan + ' sesi presensi diperbarui.' : 'Ditolak.'; loadPg(); load();
+    }).catch(function (e) { $('pmsg').textContent = e.message; });
+  }
+  $('pst').onchange = loadPg;
+  [['s1', 'MASUK'], ['s2', 'ZUHUR'], ['s3', 'PULANG']].forEach(function (b) {
+    $(b[0]).onclick = function () { sesi = b[1]; ['s1', 's2', 's3'].forEach(function (i) { $(i).setAttribute('aria-pressed', i === b[0] ? 'true' : 'false'); }); render(); };
+  });
+  $('tgl').onchange = load; $('ref').onclick = load; $('q').oninput = renderList;
+
+  var saved = sessionStorage.getItem('ep.admin');
   if (saved) { token = saved; start(); }
 })();
 </script>
