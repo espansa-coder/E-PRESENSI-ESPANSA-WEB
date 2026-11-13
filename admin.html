@@ -34,9 +34,13 @@
   #list { max-height:360px; overflow:auto; margin-top:8px; } #list div { display:flex; gap:10px; padding:5px 2px; border-bottom:1px solid #edf0f5; }
   #list span:first-child { flex:1; } #empty { color:var(--mute); padding:20px; text-align:center; }
   .pgi { border-bottom:1px solid #edf0f5; padding:8px 2px; } .pgi b { display:block; } .pgi .acts { margin-top:6px; display:flex; gap:8px; } select { font:inherit; min-height:36px; border-radius:6px; border:1px solid var(--line); padding:4px 8px; background:#fff; }
+  #ld { position:fixed; top:0; left:0; right:0; height:3px; z-index:99; background:linear-gradient(90deg,transparent,#4a7fd8,transparent); background-size:200% 100%; animation:ld 1s linear infinite; }
+  @keyframes ld { from { background-position:200% 0; } to { background-position:-200% 0; } }
+  button:disabled { opacity:.6; cursor:wait; }
 </style>
 </head>
 <body>
+<div id="ld" hidden></div>
 <section id="login">
   <h1>E-Presensi Espansa <span class="env">DEV</span></h1>
   <form id="f" autocomplete="off">
@@ -72,10 +76,13 @@
   var token = null, sesi = 'MASUK', data = null, timer = null;
   var COLS = [['HADIR', 'Hadir'], ['TERLAMBAT', 'Terlambat'], ['SAKIT', 'Sakit'], ['IZIN', 'Izin'], ['ALPA', 'Alpa'], ['BELUM_PRESENSI', 'Belum'], ['TIDAK_PRESENSI', 'Tidak presensi'], ['BEBAS', 'Bebas']];
 
+  var busy = 0;
   function api(action, payload) {
+    busy++; $('ld').hidden = false;
+    var done = function () { busy--; if (!busy) $('ld').hidden = true; };
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, token: token, payload: payload }) })
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; } return j.data; });
+      .then(function (j) { done(); if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; } return j.data; }, function (e) { done(); throw e; });
   }
   function today() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date()); }
   function el(tag, text, cls) { var e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
@@ -88,13 +95,15 @@
       $('p').value = ''; start();
     }).catch(function (x) { $('lerr').textContent = x.message; }).then(function () { $('lbtn').disabled = false; });
   };
-  function toLogin(msg) { clearInterval(timer); token = null; sessionStorage.removeItem('ep.admin'); $('app').hidden = true; $('login').hidden = false; $('lerr').textContent = msg || ''; }
+  function toLogin(msg) { clearInterval(timer); token = null; data = null; sessionStorage.clear(); $('app').hidden = true; $('login').hidden = false; $('lerr').textContent = msg || ''; }
   $('out').onclick = function () { var d = function () { toLogin(''); }; api('logout', {}).then(d, d); };
 
   function start() { $('login').hidden = true; $('app').hidden = false; if (!$('tgl').value) $('tgl').value = today(); load(); loadPg(); clearInterval(timer); timer = setInterval(function () { load(); loadPg(); }, 60000); }
   function load() {
+    var ck = 'ep.rk.a:' + $('tgl').value;
+    if (!data || data.tanggal !== $('tgl').value) { try { var sv = sessionStorage.getItem(ck); if (sv) { data = JSON.parse(sv); render(); } } catch (e) {} }   // tampilkan data terakhir dulu
     api('admin.rekap', { tanggal: $('tgl').value }).then(function (d) {
-      data = d; $('upd').textContent = 'Diperbarui ' + new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
+      data = d; try { sessionStorage.setItem(ck, JSON.stringify(d)); } catch (e) {} $('upd').textContent = 'Diperbarui ' + new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
       render();
     }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('upd').textContent = 'Gagal memuat: ' + e.message; });
   }
@@ -137,8 +146,8 @@
         else {
           var a = el('div', undefined, 'acts'), y = el('button', 'Setujui', 'primary'), n = el('button', 'Tolak');
           y.type = 'button'; n.type = 'button';
-          y.onclick = function () { putus(r[0], 'DISETUJUI', ''); };
-          n.onclick = function () { var c = prompt('Alasan penolakan (wajib):'); if (c) putus(r[0], 'DITOLAK', c); };
+          y.onclick = function () { y.disabled = true; n.disabled = true; y.textContent = 'Memproses...'; putus(r[0], 'DISETUJUI', ''); };
+          n.onclick = function () { var c = prompt('Alasan penolakan (wajib):'); if (c) { y.disabled = true; n.disabled = true; n.textContent = 'Memproses...'; putus(r[0], 'DITOLAK', c); } };
           a.appendChild(y); a.appendChild(n); d.appendChild(a);
         }
         box.appendChild(d);
@@ -148,7 +157,7 @@
   function putus(id, k, c) {
     api('admin.pengajuan.putuskan', { id: id, keputusan: k, catatan: c }).then(function (r) {
       $('pmsg').textContent = k === 'DISETUJUI' ? 'Disetujui. ' + r.diterapkan + ' sesi presensi diperbarui.' : 'Ditolak.'; loadPg(); load();
-    }).catch(function (e) { $('pmsg').textContent = e.message; });
+    }).catch(function (e) { $('pmsg').textContent = e.message; loadPg(); });
   }
   $('pst').onchange = loadPg;
   [['s1', 'MASUK'], ['s2', 'ZUHUR'], ['s3', 'PULANG']].forEach(function (b) {
