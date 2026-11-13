@@ -64,6 +64,7 @@
       <div class="wrap"><table><thead><tr id="th"></tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div>
       <div class="panel"><h2 id="lh">Belum presensi / ALPA (MASUK)</h2><input id="q" placeholder="Cari nama atau kelas" aria-label="Cari"><div id="list"></div></div>
     </div>
+    <div class="panel" id="bkp" style="margin-top:16px"><h2>Backup database <button id="bkb" type="button">Backup sekarang</button> <span id="bkm" class="muted"></span></h2><div id="bkl"></div></div>
     <div class="panel" id="pgp" style="margin-top:16px"><h2>Pengajuan Wali Kelas <select id="pst" aria-label="Status pengajuan"><option value="MENUNGGU">Menunggu</option><option value="DISETUJUI">Disetujui</option><option value="DITOLAK">Ditolak</option><option value="SEMUA">Semua</option></select> <span id="pmsg" class="muted"></span></h2><div id="pgl"></div></div>
   </main>
 </section>
@@ -98,7 +99,7 @@
   function toLogin(msg) { clearInterval(timer); token = null; data = null; sessionStorage.clear(); $('app').hidden = true; $('login').hidden = false; $('lerr').textContent = msg || ''; }
   $('out').onclick = function () { var d = function () { toLogin(''); }; api('logout', {}).then(d, d); };
 
-  function start() { $('login').hidden = true; $('app').hidden = false; if (!$('tgl').value) $('tgl').value = today(); load(); loadPg(); clearInterval(timer); timer = setInterval(function () { load(); loadPg(); }, 60000); }
+  function start() { $('login').hidden = true; $('app').hidden = false; if (!$('tgl').value) $('tgl').value = today(); load(); loadPg(); loadBk(); clearInterval(timer); timer = setInterval(function () { load(); loadPg(); }, 60000); }
   function load() {
     var ck = 'ep.rk.a:' + $('tgl').value;
     if (!data || data.tanggal !== $('tgl').value) { try { var sv = sessionStorage.getItem(ck); if (sv) { data = JSON.parse(sv); render(); } } catch (e) {} }   // tampilkan data terakhir dulu
@@ -140,13 +141,23 @@
       if (!rows.length) { box.appendChild(el('div', 'Tidak ada pengajuan.', 'muted')); return; }
       rows.forEach(function (r) {
         var d = el('div', undefined, 'pgi');
-        d.appendChild(el('b', r[1] + ' (' + r[2] + ') - ' + (r[4] === 'SAKIT' ? 'Sakit' : 'Izin') + ', ' + (r[5] === r[6] ? r[5] : r[5] + ' s/d ' + r[6])));
+        d.appendChild(el('b', r[1] + ' (' + r[2] + ') - ' + (({ SAKIT: 'Sakit', IZIN: 'Izin', KOREKSI_ALPA: 'Koreksi ALPA' })[r[4]] || r[4]) + ', ' + (r[5] === r[6] ? r[5] : r[5] + ' s/d ' + r[6])));
         d.appendChild(el('span', 'Alasan: ' + r[7] + ' | Wali: ' + r[8] + ' | ' + r[9], 'muted'));
+        if (r[12]) d.appendChild(el('div', 'Riwayat scan: ' + r[12], 'muted'));
         if (r[10] !== 'MENUNGGU') d.appendChild(el('div', (r[10] === 'DISETUJUI' ? 'Disetujui' : 'Ditolak') + (r[11] ? ': ' + r[11] : ''), r[10] === 'DISETUJUI' ? 'ok' : 'bad'));
         else {
           var a = el('div', undefined, 'acts'), y = el('button', 'Setujui', 'primary'), n = el('button', 'Tolak');
           y.type = 'button'; n.type = 'button';
-          y.onclick = function () { y.disabled = true; n.disabled = true; y.textContent = 'Memproses...'; putus(r[0], 'DISETUJUI', ''); };
+          var sb = null;
+          if (r[4] === 'KOREKSI_ALPA') {   // Admin memilih status baru setelah memeriksa riwayat scan
+            sb = document.createElement('select'); sb.setAttribute('aria-label', 'Status baru');
+            [['', 'Pilih status baru...'], ['HADIR', 'Jadi Hadir'], ['TERLAMBAT', 'Jadi Terlambat'], ['SAKIT', 'Jadi Sakit'], ['IZIN', 'Jadi Izin']].forEach(function (o) { var op = el('option', o[1]); op.value = o[0]; sb.appendChild(op); });
+            a.appendChild(sb);
+          }
+          y.onclick = function () {
+            if (sb && !sb.value) { $('pmsg').textContent = 'Pilih status baru terlebih dahulu.'; return; }
+            y.disabled = true; n.disabled = true; y.textContent = 'Memproses...'; putus(r[0], 'DISETUJUI', '', sb ? sb.value : '');
+          };
           n.onclick = function () { var c = prompt('Alasan penolakan (wajib):'); if (c) { y.disabled = true; n.disabled = true; n.textContent = 'Memproses...'; putus(r[0], 'DITOLAK', c); } };
           a.appendChild(y); a.appendChild(n); d.appendChild(a);
         }
@@ -154,11 +165,24 @@
       });
     }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('pmsg').textContent = e.message; });
   }
-  function putus(id, k, c) {
-    api('admin.pengajuan.putuskan', { id: id, keputusan: k, catatan: c }).then(function (r) {
+  function putus(id, k, c, sb) {
+    api('admin.pengajuan.putuskan', { id: id, keputusan: k, catatan: c, statusBaru: sb || '' }).then(function (r) {
       $('pmsg').textContent = k === 'DISETUJUI' ? 'Disetujui. ' + r.diterapkan + ' sesi presensi diperbarui.' : 'Ditolak.'; loadPg(); load();
     }).catch(function (e) { $('pmsg').textContent = e.message; loadPg(); });
   }
+  function loadBk() {
+    api('admin.backup.status', {}).then(function (rows) {
+      var box = $('bkl'); box.textContent = '';
+      if (!rows.length) { box.appendChild(el('div', 'Belum ada backup. Backup otomatis berjalan sekitar pukul 02.00 setelah trigger dipasang.', 'muted')); return; }
+      rows.forEach(function (r) { var d = el('div', undefined, 'pgi'); d.appendChild(el('b', r[0] + ' | ' + r[1] + ' | ' + r[2], r[2] === 'GAGAL' ? 'bad' : '')); d.appendChild(el('span', r[3] + (r[4] ? ' | ' + r[4] + ' baris' : '') + (r[5] ? ' | ' + r[5] : ''), 'muted')); box.appendChild(d); });
+    }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('bkm').textContent = e.message; });
+  }
+  $('bkb').onclick = function () {
+    if (!confirm('Buat backup seluruh database sekarang? Proses sekitar 1-2 menit.')) return;
+    $('bkb').disabled = true; $('bkm').textContent = 'Membuat backup...';
+    api('admin.backup.manual', {}).then(function (r) { $('bkm').textContent = 'Backup ' + r[0] + ' (' + r[2] + ')'; loadBk(); })
+      .catch(function (e) { $('bkm').textContent = e.message; }).then(function () { $('bkb').disabled = false; });
+  };
   $('pst').onchange = loadPg;
   [['s1', 'MASUK'], ['s2', 'ZUHUR'], ['s3', 'PULANG']].forEach(function (b) {
     $(b[0]).onclick = function () { sesi = b[1]; ['s1', 's2', 's3'].forEach(function (i) { $(i).setAttribute('aria-pressed', i === b[0] ? 'true' : 'false'); }); render(); };
