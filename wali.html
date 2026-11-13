@@ -9,7 +9,7 @@
   * { box-sizing:border-box; }
   body { margin:0; font:15px/1.45 system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
   [hidden] { display:none !important; }
-  button, input { font:inherit; min-height:40px; border-radius:6px; border:1px solid var(--line); padding:6px 12px; background:#fff; color:var(--ink); }
+  button, input, select { font:inherit; min-height:40px; border-radius:6px; border:1px solid var(--line); padding:6px 12px; background:#fff; color:var(--ink); }
   button { cursor:pointer; } button.primary { background:var(--navy); border-color:var(--navy); color:#fff; }
   button:focus-visible, input:focus-visible { outline:3px solid #4a7fd8; outline-offset:2px; }
   .box { max-width:380px; margin:8vh auto; background:#fff; padding:24px; border-radius:10px; border:1px solid var(--line); }
@@ -28,6 +28,10 @@
   .wrap { background:#fff; border:1px solid var(--line); border-radius:8px; overflow-x:auto; } table { border-collapse:collapse; width:100%; min-width:560px; }
   th, td { padding:7px 10px; text-align:left; border-bottom:1px solid #edf0f5; white-space:nowrap; } th { background:#f6f8fb; font-size:.82rem; color:var(--mute); }
   #q { width:100%; max-width:320px; margin-bottom:10px; } #empty { color:var(--mute); padding:24px; text-align:center; }
+  button[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
+  .pgf { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:14px; }
+  .pgf label { display:block; font-size:.82rem; color:var(--mute); margin-bottom:2px; } .pgf input, .pgf select { width:100%; } .pgf .full { grid-column:1/-1; }
+  #pge { min-height:1.4em; font-size:.92rem; margin-top:6px; } h2 { font-size:1rem; margin:0 0 8px; }
 </style>
 </head>
 <body>
@@ -52,13 +56,26 @@
 
 <section id="app" hidden>
   <header><h1>Kelas <span id="kls"></span> <span class="env">DEV</span></h1><span id="who"></span><button id="out" type="button">Keluar</button></header>
-  <div class="bar"><label for="tgl">Tanggal</label><input id="tgl" type="date"><span class="sp"></span><span id="upd"></span><button id="ref" type="button">Muat ulang</button></div>
+  <div class="bar"><button id="t1" type="button" aria-pressed="true">Rekap presensi</button><button id="t2" type="button" aria-pressed="false">Pengajuan</button><label for="tgl">Tanggal</label><input id="tgl" type="date"><span class="sp"></span><span id="upd"></span><button id="ref" type="button">Muat ulang</button></div>
   <main>
     <div id="empty" hidden></div>
     <div id="data">
       <div class="cards" id="cards"></div>
       <input id="q" placeholder="Cari nama atau NIS" aria-label="Cari siswa">
       <div class="wrap"><table><thead><tr><th>Nama</th><th>NIS</th><th>Masuk</th><th>Zuhur</th><th>Pulang</th></tr></thead><tbody id="tb"></tbody></table></div>
+    </div>
+    <div id="pgv" hidden>
+      <h2>Ajukan SAKIT / IZIN</h2>
+      <form class="pgf" id="pgf" autocomplete="off">
+        <div class="full"><label for="pgs">Siswa</label><select id="pgs" required></select></div>
+        <div><label for="pgj">Jenis</label><select id="pgj"><option value="SAKIT">Sakit</option><option value="IZIN">Izin</option></select></div>
+        <div><label for="pgm">Tanggal mulai</label><input id="pgm" type="date" required></div>
+        <div><label for="pgk">Tanggal selesai</label><input id="pgk" type="date" required></div>
+        <div class="full"><label for="pga">Alasan</label><input id="pga" maxlength="300" required></div>
+        <div class="full"><button class="primary" type="submit">Kirim pengajuan</button><div id="pge" role="status"></div></div>
+      </form>
+      <h2>Pengajuan Anda</h2>
+      <div class="wrap"><table><thead><tr><th>Siswa</th><th>Jenis</th><th>Tanggal</th><th>Alasan</th><th>Status</th><th></th></tr></thead><tbody id="pgt"></tbody></table></div>
     </div>
   </main>
 </section>
@@ -68,7 +85,7 @@
   'use strict';
   var API = 'https://script.google.com/macros/s/AKfycbzxlDM0vbjCH8MCDHafTl9njW3d4XW7fJJ8yY6OSjinWkEEF1wId5k8eMEUREedXCHZkw/exec';
   var $ = function (i) { return document.getElementById(i); };
-  var token = null, data = null, timer = null, oldPw = '';
+  var token = null, data = null, timer = null, oldPw = '', tabNow = 'rekap', roster = null;
   var LBL = { HADIR: 'Hadir', TERLAMBAT: 'Terlambat', SAKIT: 'Sakit', IZIN: 'Izin', ALPA: 'Alpa', BELUM_PRESENSI: 'Belum', TIDAK_PRESENSI: 'Tidak presensi', BEBAS: 'Bebas', TIDAK_BERLAKU: '-' };
   var CLS = { HADIR: 'ok', TERLAMBAT: 'warn', ALPA: 'bad', BELUM_PRESENSI: 'muted', TIDAK_PRESENSI: 'muted', BEBAS: 'muted', TIDAK_BERLAKU: 'muted' };
 
@@ -108,11 +125,13 @@
     }).catch(function (e) {
       if (e.code === 'SESI_BERAKHIR') return toLogin('Sesi berakhir. Silakan login kembali.');
       if (e.code === 'WAJIB_GANTI_PASSWORD') return show('chg');
+      if (tabNow === 'pg') return;
       data = null; $('empty').hidden = false; $('data').hidden = true; $('empty').textContent = e.message;
     });
   }
   function cell(st, jam) { var td = el('td'); td.appendChild(el('span', LBL[st] || st || '-', CLS[st] || '')); if (jam) td.appendChild(el('span', '  ' + jam, 'muted')); return td; }
   function render() {
+    if (tabNow === 'pg') return;
     var ok = !!(data && data.ada);
     $('empty').hidden = ok; $('data').hidden = !ok;
     if (!ok) { $('empty').textContent = 'Belum ada data presensi untuk tanggal ini.'; return; }
@@ -126,6 +145,39 @@
       tr.appendChild(cell(s[2], s[3])); tr.appendChild(cell(s[4], s[5])); tr.appendChild(cell(s[6], s[7])); tb.appendChild(tr);
     });
   }
+  function tab(n) {
+    tabNow = n; $('t1').setAttribute('aria-pressed', String(n === 'rekap')); $('t2').setAttribute('aria-pressed', String(n === 'pg')); $('pgv').hidden = n !== 'pg';
+    if (n === 'pg') { $('empty').hidden = true; $('data').hidden = true; loadPg(); } else load();
+  }
+  function loadPg() {
+    if (!roster) api('wali.siswa', {}).then(function (r) {
+      roster = r; var s = $('pgs'); s.textContent = '';
+      r.forEach(function (x) { var o = el('option', x[0] + ' (' + x[1] + ')'); o.value = x[1]; s.appendChild(o); });
+    }).catch(function (e) { $('pge').textContent = e.message; });
+    if (!$('pgm').value) { $('pgm').value = today(); $('pgk').value = today(); }
+    api('wali.pengajuan.daftar', {}).then(function (rows) {
+      var tb = $('pgt'); tb.textContent = '';
+      rows.forEach(function (r) {
+        var tr = el('tr'); tr.appendChild(el('td', r[1])); tr.appendChild(el('td', r[3] === 'SAKIT' ? 'Sakit' : 'Izin'));
+        tr.appendChild(el('td', r[4] === r[5] ? r[4] : r[4] + ' s/d ' + r[5])); tr.appendChild(el('td', r[6]));
+        tr.appendChild(el('td', r[7] === 'MENUNGGU' ? 'Menunggu' : r[7] === 'DISETUJUI' ? 'Disetujui' : 'Ditolak', r[7] === 'DISETUJUI' ? 'ok' : r[7] === 'DITOLAK' ? 'bad' : 'warn'));
+        var ac = el('td');
+        if (r[7] === 'MENUNGGU') {
+          var b = el('button', 'Batalkan'); b.type = 'button';
+          b.onclick = function () { if (confirm('Batalkan pengajuan ini?')) api('wali.pengajuan.batal', { id: r[0] }).then(loadPg).catch(function (e) { $('pge').textContent = e.message; }); };
+          ac.appendChild(b);
+        } else if (r[8]) ac.appendChild(el('span', r[8], 'muted'));
+        tr.appendChild(ac); tb.appendChild(tr);
+      });
+    }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('pge').textContent = e.message; });
+  }
+  $('pgf').onsubmit = function (e) {
+    e.preventDefault(); $('pge').textContent = '';
+    api('wali.pengajuan.buat', { nis: $('pgs').value, jenis: $('pgj').value, tanggalMulai: $('pgm').value, tanggalSelesai: $('pgk').value, alasan: $('pga').value }).then(function () {
+      $('pga').value = ''; $('pge').textContent = 'Pengajuan terkirim. Menunggu persetujuan Admin.'; loadPg();
+    }).catch(function (x) { $('pge').textContent = x.message; });
+  };
+  $('t1').onclick = function () { tab('rekap'); }; $('t2').onclick = function () { tab('pg'); };
   $('tgl').onchange = load; $('ref').onclick = load; $('q').oninput = render;
 
   var saved = sessionStorage.getItem('ep.wali');
