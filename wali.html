@@ -32,9 +32,13 @@
   .pgf { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:14px; }
   .pgf label { display:block; font-size:.82rem; color:var(--mute); margin-bottom:2px; } .pgf input, .pgf select { width:100%; } .pgf .full { grid-column:1/-1; }
   #pge { min-height:1.4em; font-size:.92rem; margin-top:6px; } h2 { font-size:1rem; margin:0 0 8px; }
+  #ld { position:fixed; top:0; left:0; right:0; height:3px; z-index:99; background:linear-gradient(90deg,transparent,#4a7fd8,transparent); background-size:200% 100%; animation:ld 1s linear infinite; }
+  @keyframes ld { from { background-position:200% 0; } to { background-position:-200% 0; } }
+  button:disabled { opacity:.6; cursor:wait; }
 </style>
 </head>
 <body>
+<div id="ld" hidden></div>
 <section id="login" class="box">
   <h1>Wali Kelas <span class="env">DEV</span></h1><p>E-Presensi Espansa, SMP Negeri 1 Panawangan</p>
   <form id="f" autocomplete="off">
@@ -72,7 +76,7 @@
         <div><label for="pgm">Tanggal mulai</label><input id="pgm" type="date" required></div>
         <div><label for="pgk">Tanggal selesai</label><input id="pgk" type="date" required></div>
         <div class="full"><label for="pga">Alasan</label><input id="pga" maxlength="300" required></div>
-        <div class="full"><button class="primary" type="submit">Kirim pengajuan</button><div id="pge" role="status"></div></div>
+        <div class="full"><button class="primary" id="pgb" type="submit">Kirim pengajuan</button><div id="pge" role="status"></div></div>
       </form>
       <h2>Pengajuan Anda</h2>
       <div class="wrap"><table><thead><tr><th>Siswa</th><th>Jenis</th><th>Tanggal</th><th>Alasan</th><th>Status</th><th></th></tr></thead><tbody id="pgt"></tbody></table></div>
@@ -85,14 +89,17 @@
   'use strict';
   var API = 'https://script.google.com/macros/s/AKfycbzxlDM0vbjCH8MCDHafTl9njW3d4XW7fJJ8yY6OSjinWkEEF1wId5k8eMEUREedXCHZkw/exec';
   var $ = function (i) { return document.getElementById(i); };
-  var token = null, data = null, timer = null, oldPw = '', tabNow = 'rekap', roster = null;
+  var token = null, data = null, timer = null, oldPw = '', tabNow = 'rekap', roster = null, lastRk = 0, lastPg = 0;
   var LBL = { HADIR: 'Hadir', TERLAMBAT: 'Terlambat', SAKIT: 'Sakit', IZIN: 'Izin', ALPA: 'Alpa', BELUM_PRESENSI: 'Belum', TIDAK_PRESENSI: 'Tidak presensi', BEBAS: 'Bebas', TIDAK_BERLAKU: '-' };
   var CLS = { HADIR: 'ok', TERLAMBAT: 'warn', ALPA: 'bad', BELUM_PRESENSI: 'muted', TIDAK_PRESENSI: 'muted', BEBAS: 'muted', TIDAK_BERLAKU: 'muted' };
 
+  var busy = 0;
   function api(action, payload) {
+    busy++; $('ld').hidden = false;
+    var done = function () { busy--; if (!busy) $('ld').hidden = true; };
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, token: token, payload: payload }) })
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; } return j.data; });
+      .then(function (j) { done(); if (!j.ok) { var e = new Error(j.error.message); e.code = j.error.code; throw e; } return j.data; }, function (e) { done(); throw e; });
   }
   function el(tag, text, cls) { var e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
   function today() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date()); }
@@ -118,7 +125,10 @@
 
   function start() { show('app'); if (!$('tgl').value) $('tgl').value = today(); load(); clearInterval(timer); timer = setInterval(load, 60000); }
   function load() {
+    var ck = 'ep.rk.w:' + $('tgl').value;
+    if (!data || data.tanggal !== $('tgl').value) { try { var sv = sessionStorage.getItem(ck); if (sv) { data = JSON.parse(sv); render(); } } catch (e) {} }   // tampilkan data terakhir dulu
     api('wali.rekap', { tanggal: $('tgl').value }).then(function (d) {
+      lastRk = Date.now(); try { sessionStorage.setItem(ck, JSON.stringify(d)); } catch (e) {}
       data = d; if (d.kelas[0]) $('kls').textContent = d.kelas[0].kelas;
       $('upd').textContent = 'Diperbarui ' + new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
       render();
@@ -147,7 +157,7 @@
   }
   function tab(n) {
     tabNow = n; $('t1').setAttribute('aria-pressed', String(n === 'rekap')); $('t2').setAttribute('aria-pressed', String(n === 'pg')); $('pgv').hidden = n !== 'pg';
-    if (n === 'pg') { $('empty').hidden = true; $('data').hidden = true; loadPg(); } else load();
+    if (n === 'pg') { $('empty').hidden = true; $('data').hidden = true; if (!roster || Date.now() - lastPg > 20000) loadPg(); } else if (!data || Date.now() - lastRk > 20000) load(); else render();
   }
   function loadPg() {
     if (!roster) api('wali.siswa', {}).then(function (r) {
@@ -156,7 +166,7 @@
     }).catch(function (e) { $('pge').textContent = e.message; });
     if (!$('pgm').value) { $('pgm').value = today(); $('pgk').value = today(); }
     api('wali.pengajuan.daftar', {}).then(function (rows) {
-      var tb = $('pgt'); tb.textContent = '';
+      lastPg = Date.now(); var tb = $('pgt'); tb.textContent = '';
       rows.forEach(function (r) {
         var tr = el('tr'); tr.appendChild(el('td', r[1])); tr.appendChild(el('td', r[3] === 'SAKIT' ? 'Sakit' : 'Izin'));
         tr.appendChild(el('td', r[4] === r[5] ? r[4] : r[4] + ' s/d ' + r[5])); tr.appendChild(el('td', r[6]));
@@ -164,7 +174,7 @@
         var ac = el('td');
         if (r[7] === 'MENUNGGU') {
           var b = el('button', 'Batalkan'); b.type = 'button';
-          b.onclick = function () { if (confirm('Batalkan pengajuan ini?')) api('wali.pengajuan.batal', { id: r[0] }).then(loadPg).catch(function (e) { $('pge').textContent = e.message; }); };
+          b.onclick = function () { if (confirm('Batalkan pengajuan ini?')) { b.disabled = true; b.textContent = 'Membatalkan...'; } else return; api('wali.pengajuan.batal', { id: r[0] }).then(loadPg).catch(function (e) { $('pge').textContent = e.message; }); };
           ac.appendChild(b);
         } else if (r[8]) ac.appendChild(el('span', r[8], 'muted'));
         tr.appendChild(ac); tb.appendChild(tr);
@@ -172,10 +182,10 @@
     }).catch(function (e) { if (e.code === 'SESI_BERAKHIR') toLogin('Sesi berakhir. Silakan login kembali.'); else $('pge').textContent = e.message; });
   }
   $('pgf').onsubmit = function (e) {
-    e.preventDefault(); $('pge').textContent = '';
+    e.preventDefault(); $('pge').textContent = ''; $('pgb').disabled = true; $('pgb').textContent = 'Mengirim...';
     api('wali.pengajuan.buat', { nis: $('pgs').value, jenis: $('pgj').value, tanggalMulai: $('pgm').value, tanggalSelesai: $('pgk').value, alasan: $('pga').value }).then(function () {
-      $('pga').value = ''; $('pge').textContent = 'Pengajuan terkirim. Menunggu persetujuan Admin.'; loadPg();
-    }).catch(function (x) { $('pge').textContent = x.message; });
+      $('pga').value = ''; $('pge').textContent = 'Pengajuan terkirim. Menunggu persetujuan Admin.'; lastPg = 0; loadPg();
+    }).catch(function (x) { $('pge').textContent = x.message; }).then(function () { $('pgb').disabled = false; $('pgb').textContent = 'Kirim pengajuan'; });
   };
   $('t1').onclick = function () { tab('rekap'); }; $('t2').onclick = function () { tab('pg'); };
   $('tgl').onchange = load; $('ref').onclick = load; $('q').oninput = render;
