@@ -48,3 +48,19 @@
   };
   w.EP = EP;
 })(window);
+EP.testPing = function () {
+  return fetch(EP.API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=UTF-8"
+    },
+    body: JSON.stringify({
+      action: "PING",
+      token: null,
+      payload: {}
+    })
+  })
+  .then(function (response) {
+    return response.json();
+  });
+};
