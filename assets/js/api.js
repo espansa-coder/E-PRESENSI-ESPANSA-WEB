@@ -2,7 +2,7 @@
  * Alamat Web App hanya ada di sini. Jangan menaruh password, kunci, atau token di file ini. */
 (function (w) {
   'use strict';
-  var EP = { API: 'https://script.google.com/macros/s/AKfycbzxlDM0vbjCH8MCDHafTl9njW3d4XW7fJJ8yY6OSjinWkEEF1wId5k8eMEUREedXCHZkw/exec', LOGIN: 'login.html' };
+  var EP = { API: 'https://script.google.com/macros/s/AKfycbywI14T7RLrxfsPiO-hYiaHKHUNOYhUc2adha6vXUNX2LafVVlPpDNpcGUYVb1SlcUSVg/exec', LOGIN: 'login.html' };
 
   function read() { try { return JSON.parse(sessionStorage.getItem('ep.sess')); } catch (e) { return null; } }
   EP.session = read;
