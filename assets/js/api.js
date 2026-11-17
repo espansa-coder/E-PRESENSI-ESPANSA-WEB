@@ -46,9 +46,7 @@
     if (!s || !s.token || s.mustChange || (roles && roles.indexOf(s.user.role) < 0)) { location.replace(EP.LOGIN); return false; }
     return true;
   };
-  w.EP = EP;
-})(window);
-EP.testPing = function () {
+  EP.testPing = function () {
   return fetch(EP.API, {
     method: "POST",
     headers: {
@@ -64,3 +62,6 @@ EP.testPing = function () {
     return response.json();
   });
 };
+  w.EP = EP;
+})(window);
+
