@@ -1023,3 +1023,98 @@ footer {
     padding: 20px 16px;
   }
 }
+
+
+/* =================================
+   KOMPONEN TAMBAHAN HALAMAN LOGIN
+   ================================= */
+
+.login-password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-password-wrap input {
+  padding-right: 105px;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  color: #526783;
+  padding: 7px 9px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.login-password-toggle:hover {
+  color: #10264F;
+}
+
+.login-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.login-message {
+  margin: 8px 0 0;
+  padding: 11px 12px;
+  border: 1px solid #F2C7C7;
+  border-radius: 7px;
+  background: #FFF1F1;
+  color: #9B2C2C;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.login-success {
+  text-align: center;
+  padding-top: 4px;
+}
+
+.login-success-mark {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #E7F6EC;
+  color: #237A42;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.login-success h2 {
+  color: #10264F;
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.login-success p {
+  color: #52617A;
+  font-size: 13px;
+  margin: 0 0 9px;
+  overflow-wrap: anywhere;
+}
+
+.login-success .login-success-note {
+  color: #718096;
+  font-size: 12px;
+}
+
+.login-secondary {
+  width: 100%;
+  background: #FFFFFF;
+  color: #10264F;
+  border: 1px solid #DCE2EA;
+}
+
+.login-secondary:hover {
+  background: #F5F7FA;
+}
