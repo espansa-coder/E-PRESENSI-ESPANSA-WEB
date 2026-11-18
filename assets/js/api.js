@@ -369,7 +369,7 @@
       );
     }
 
-    if (!/^\\$2b\\$10\\$[./A-Za-z0-9]{22}$/.test(salt)) {
+    if (!/^\$2b\$10\$[./A-Za-z0-9]{22}$/.test(salt)) {
       return Promise.reject(
         new Error('Format salt keamanan tidak valid.')
       );
