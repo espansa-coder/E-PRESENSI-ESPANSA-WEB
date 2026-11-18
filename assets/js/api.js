@@ -13,7 +13,8 @@
 
   var EP = {
     API: 'https://script.google.com/macros/s/AKfycbywI14T7RLrxfsPiO-hYiaHKHUNOYhUc2adha6vXUNX2LafVVlPpDNpcGUYVb1SlcUSVg/exec',
-    LOGIN: 'login.html'
+    LOGIN: 'login.html',
+    PASSWORD_CHANGE: 'ganti-password.html'
   };
 
   var memoryDeviceId = null;
@@ -339,10 +340,47 @@
     newPassword,
     confirmation
   ) {
+    if (
+      !w.crypto ||
+      typeof w.crypto.getRandomValues !== 'function'
+    ) {
+      return Promise.reject(
+        new Error('Browser tidak mendukung pembangkit salt yang aman. Gunakan browser terbaru melalui HTTPS.')
+      );
+    }
+
+    if (
+      !w.bcrypt ||
+      typeof w.bcrypt.genSaltSync !== 'function'
+    ) {
+      return Promise.reject(
+        new Error('Modul keamanan password belum berhasil dimuat. Muat ulang halaman.')
+      );
+    }
+
+    var salt;
+
+    try {
+      // Salt bcrypt dibuat dengan Web Crypto; cost dikunci pada 10.
+      salt = w.bcrypt.genSaltSync(10);
+    } catch (error) {
+      return Promise.reject(
+        new Error('Salt password aman gagal dibuat. Periksa dukungan Web Crypto browser.')
+      );
+    }
+
+    if (!/^\$2b\$10\$[./A-Za-z0-9]{22}$/.test(salt)) {
+      return Promise.reject(
+        new Error('Format salt keamanan tidak valid.')
+      );
+    }
+
+    // Password tetap dikirim melalui HTTPS dan di-hash di backend.
     return EP.api('CHANGE_PASSWORD', {
       currentPassword: currentPassword,
       newPassword: newPassword,
-      confirmation: confirmation
+      confirmation: confirmation,
+      salt: salt
     });
   };
 
@@ -353,16 +391,38 @@
   EP.requireLogin = function (roles) {
     var session = readSession_();
 
+    if (!session || !session.token) {
+      w.location.replace(EP.LOGIN);
+      return false;
+    }
+
+    if (session.mustChange) {
+      w.location.replace(EP.PASSWORD_CHANGE);
+      return false;
+    }
+
     if (
-      !session ||
-      !session.token ||
-      session.mustChange ||
-      (
-        roles &&
-        roles.indexOf(session.user.role) < 0
-      )
+      roles &&
+      (!session.user || roles.indexOf(session.user.role) < 0)
     ) {
       w.location.replace(EP.LOGIN);
+      return false;
+    }
+
+    return true;
+  };
+
+  // Guard khusus halaman penggantian password wajib.
+  EP.requirePasswordChange = function () {
+    var session = readSession_();
+
+    if (!session || !session.token) {
+      w.location.replace(EP.LOGIN);
+      return false;
+    }
+
+    if (!session.mustChange) {
+      w.location.replace('index.html');
       return false;
     }
 

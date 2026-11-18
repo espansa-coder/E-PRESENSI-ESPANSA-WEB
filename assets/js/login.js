@@ -90,19 +90,19 @@
           var user = result.user || {};
           var role = getRole_(user);
 
+          if (result.mustChange) {
+            window.location.replace('ganti-password.html');
+            return;
+          }
+
           form.hidden = true;
           successPanel.hidden = false;
           welcomeMessage.textContent =
             'Selamat datang, ' + getUserName_(user) +
             (role ? ' (' + role + ').' : '.');
 
-          if (result.mustChange) {
-            nextStepMessage.textContent =
-              'Akun ini wajib mengganti password sebelum menggunakan fitur aplikasi. Halaman penggantian password akan disiapkan pada tahap berikutnya.';
-          } else {
-            nextStepMessage.textContent =
-              'Autentikasi berhasil dan sesi login tersimpan di browser ini. Dashboard sesuai peran akan dihubungkan pada tahap berikutnya.';
-          }
+          nextStepMessage.textContent =
+            'Autentikasi berhasil dan sesi login tersimpan di browser ini. Dashboard sesuai peran akan dihubungkan pada tahap berikutnya.';
         })
         .catch(function (error) {
           showMessage_(
@@ -131,6 +131,11 @@
       ? window.EP.session()
       : null;
 
+    if (existingSession && existingSession.token && existingSession.mustChange) {
+      window.location.replace('ganti-password.html');
+      return;
+    }
+
     if (existingSession && existingSession.token && existingSession.user) {
       form.hidden = true;
       successPanel.hidden = false;
@@ -139,6 +144,11 @@
       nextStepMessage.textContent =
         'Sesi login masih tersimpan pada tab browser ini. Dashboard sesuai peran akan dihubungkan pada tahap berikutnya.';
     } else {
+      var flashMessage = sessionStorage.getItem('ep.msg');
+      if (flashMessage) {
+        sessionStorage.removeItem('ep.msg');
+        showMessage_(flashMessage);
+      }
       usernameInput.focus();
     }
   });
