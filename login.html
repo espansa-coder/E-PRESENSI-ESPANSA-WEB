@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264F">
+  <meta name="description" content="Login E-PRESENSI ESPANSA SMP Negeri 1 Panawangan">
+  <title>Login · E-PRESENSI ESPANSA</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/api.js" defer></script>
+  <script src="assets/js/login.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-container">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-brand">
+        <img src="assets/images/logo-smpn-panawangan.png"
+             alt="Logo SMP Negeri 1 Panawangan" class="login-logo">
+        <h1>E-PRESENSI ESPANSA</h1>
+        <p>SMP Negeri 1 Panawangan</p>
+      </div>
+
+      <div class="login-divider"></div>
+
+      <div class="login-heading">
+        <h2 id="login-title">Masuk ke Aplikasi</h2>
+        <p>Gunakan akun yang telah terdaftar oleh Administrator.</p>
+      </div>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text"
+               autocomplete="username" autocapitalize="none"
+               spellcheck="false" placeholder="Masukkan username"
+               required maxlength="100">
+
+        <label for="password">Password</label>
+        <div class="login-password-wrap">
+          <input id="password" name="password" type="password"
+                 autocomplete="current-password"
+                 placeholder="Masukkan password" required>
+          <button id="togglePassword" class="login-password-toggle"
+                  type="button" aria-label="Tampilkan password"
+                  aria-pressed="false">Lihat</button>
+        </div>
+
+        <p id="loginMessage" class="login-message" role="alert"
+           aria-live="polite" hidden></p>
+
+        <button id="loginButton" class="login-button" type="submit">
+          Masuk
+        </button>
+      </form>
+
+      <section id="loginSuccess" class="login-success" hidden
+               aria-live="polite">
+        <div class="login-success-mark" aria-hidden="true">✓</div>
+        <h2>Login berhasil</h2>
+        <p id="welcomeMessage"></p>
+        <p id="nextStepMessage" class="login-success-note"></p>
+        <button id="logoutButton" class="login-button login-secondary"
+                type="button">Keluar dari sesi</button>
+      </section>
+
+      <div class="login-notice">
+        <span class="notice-dot" aria-hidden="true"></span>
+        <span>Akses aplikasi hanya untuk pengguna yang berwenang.</span>
+      </div>
+    </section>
+
+    <p class="login-footer">
+      © 2026 SMP Negeri 1 Panawangan<br>
+      E-PRESENSI ESPANSA · Versi 1.1.0 · Lingkungan DEV
+    </p>
+  </main>
+</body>
+</html>
